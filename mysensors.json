@@ -1,0 +1,359 @@
+{
+    "0": {
+        "sketch_version": null,
+        "battery_level": 0,
+        "sensor_id": 0,
+        "type": 18,
+        "sketch_name": null,
+        "children": {
+            "1": {
+                "id": 1,
+                "type": 33,
+                "description": "",
+                "values": {
+                    "37": "-43.0"
+                }
+            },
+            "2": {
+                "id": 2,
+                "type": 33,
+                "description": "",
+                "values": {
+                    "37": "-29.0"
+                }
+            }
+        },
+        "protocol_version": "2.2.0",
+        "heartbeat": 0
+    },
+    "12": {
+        "sketch_version": "1.1",
+        "battery_level": 0,
+        "sensor_id": 12,
+        "type": 17,
+        "sketch_name": "JMP ENERGY_12",
+        "children": {
+            "1": {
+                "id": 1,
+                "type": 13,
+                "description": "Watt ENERGY_12",
+                "values": {
+                    "17": "151"
+                }
+            },
+            "2": {
+                "id": 2,
+                "type": 13,
+                "description": "KWH ENERGY_12",
+                "values": {
+                    "18": "469.1490"
+                }
+            },
+            "3": {
+                "id": 3,
+                "type": 23,
+                "description": "Pulse Count ENERGY_12",
+                "values": {
+                    "24": "469149"
+                }
+            }
+        },
+        "protocol_version": "2.2.0",
+        "heartbeat": 0
+    },
+    "13": {
+        "sketch_version": "1.0",
+        "battery_level": 84,
+        "sensor_id": 13,
+        "type": 17,
+        "sketch_name": "JMP BEDROOM_13",
+        "children": {
+            "1": {
+                "id": 1,
+                "type": 8,
+                "description": "Press  BEDROOM_13",
+                "values": {
+                    "4": "1020.91"
+                }
+            },
+            "2": {
+                "id": 2,
+                "type": 6,
+                "description": "Temp  BEDROOM_13",
+                "values": {
+                    "0": "21.15"
+                }
+            },
+            "3": {
+                "id": 3,
+                "type": 7,
+                "description": "Hum  BEDROOM_13",
+                "values": {
+                    "1": "59.98"
+                }
+            },
+            "7": {
+                "id": 7,
+                "type": 30,
+                "description": "Batt  BEDROOM_13",
+                "values": {
+                    "38": "4.04"
+                }
+            }
+        },
+        "protocol_version": "2.2.0",
+        "heartbeat": 0
+    },
+    "14": {
+        "sketch_version": "1.0",
+        "battery_level": 68,
+        "sensor_id": 14,
+        "type": 17,
+        "sketch_name": "JMP WEATHER_14",
+        "children": {
+            "1": {
+                "id": 1,
+                "type": 6,
+                "description": "Temp WEATHER_14",
+                "values": {
+                    "0": "26.19"
+                }
+            },
+            "2": {
+                "id": 2,
+                "type": 7,
+                "description": "HumWEATHER_14",
+                "values": {
+                    "1": "51.17"
+                }
+            },
+            "7": {
+                "id": 7,
+                "type": 30,
+                "description": "Batt WEATHER_14",
+                "values": {
+                    "38": "3.83"
+                }
+            }
+        },
+        "protocol_version": "2.2.0",
+        "heartbeat": 0
+    },
+    "16": {
+        "sketch_version": "1.0",
+        "battery_level": 74,
+        "sensor_id": 16,
+        "type": 17,
+        "sketch_name": "JMP WEATHER_16",
+        "children": {
+            "1": {
+                "id": 1,
+                "type": 8,
+                "description": "Press WEATHER_16",
+                "values": {
+                    "4": "1020.72"
+                }
+            },
+            "2": {
+                "id": 2,
+                "type": 6,
+                "description": "Temp WEATHER_16",
+                "values": {
+                    "0": "20.82"
+                }
+            },
+            "3": {
+                "id": 3,
+                "type": 7,
+                "description": "Hum WEATHER_16",
+                "values": {
+                    "1": "69.42"
+                }
+            },
+            "7": {
+                "id": 7,
+                "type": 30,
+                "description": "Batt WEATHER_16",
+                "values": {
+                    "38": "3.89"
+                }
+            }
+        },
+        "protocol_version": "2.2.0",
+        "heartbeat": 0
+    },
+    "17": {
+        "sketch_version": "1.0",
+        "battery_level": 94,
+        "sensor_id": 17,
+        "type": 17,
+        "sketch_name": "JMP RAIN_17",
+        "children": {
+            "1": {
+                "id": 1,
+                "type": 16,
+                "description": "Light RAIN_17",
+                "values": {
+                    "37": "2044"
+                }
+            },
+            "2": {
+                "id": 2,
+                "type": 11,
+                "description": "UV RAIN_17",
+                "values": {
+                    "11": "0.38"
+                }
+            },
+            "3": {
+                "id": 3,
+                "type": 10,
+                "description": "Rain RAIN_17",
+                "values": {
+                    "24": "1170",
+                    "6": "1398.4"
+                }
+            },
+            "7": {
+                "id": 7,
+                "type": 13,
+                "description": "Batt RAIN_17",
+                "values": {
+                    "38": "4.12",
+                    "39": "0.00"
+                }
+            }
+        },
+        "protocol_version": "2.1.1",
+        "heartbeat": 0
+    },
+    "18": {
+        "sketch_version": "1.0",
+        "battery_level": 0,
+        "sensor_id": 18,
+        "type": 17,
+        "sketch_name": "JMP GAS-SENSOR_18",
+        "children": {
+            "1": {
+                "id": 1,
+                "type": 22,
+                "description": "MQ2_Smoke GAS-SENSOR_18",
+                "values": {
+                    "37": "305.27"
+                }
+            },
+            "2": {
+                "id": 2,
+                "type": 22,
+                "description": "MQ2_LPG GAS-SENSOR_18",
+                "values": {
+                    "37": "63.53"
+                }
+            },
+            "3": {
+                "id": 3,
+                "type": 22,
+                "description": "MQ2_Alcohol GAS-SENSOR_18",
+                "values": {
+                    "37": "193.47"
+                }
+            },
+            "4": {
+                "id": 4,
+                "type": 22,
+                "description": "MQ135_CO2 GAS-SENSOR_18",
+                "values": {
+                    "37": "14.18"
+                }
+            },
+            "5": {
+                "id": 5,
+                "type": 22,
+                "description": "MQ135_NH4 GAS-SENSOR_18",
+                "values": {
+                    "37": "16.18"
+                }
+            },
+            "6": {
+                "id": 6,
+                "type": 22,
+                "description": "MQ135_Sulfide GAS-SENSOR_",
+                "values": {
+                    "37": "7.77"
+                }
+            }
+        },
+        "protocol_version": "2.0.0",
+        "heartbeat": 0
+    },
+    "21": {
+        "sketch_version": "1.0",
+        "battery_level": 0,
+        "sensor_id": 21,
+        "type": 17,
+        "sketch_name": "JMP LIVIA_21",
+        "children": {
+            "1": {
+                "id": 1,
+                "type": 6,
+                "description": "TempLIVIA_21",
+                "values": {
+                    "0": "20.65"
+                }
+            },
+            "2": {
+                "id": 2,
+                "type": 7,
+                "description": "HumLIVIA_21",
+                "values": {
+                    "1": "59.37"
+                }
+            },
+            "7": {
+                "id": 7,
+                "type": 30,
+                "description": "Batt LIVIA_21",
+                "values": {
+                    "38": "3.44"
+                }
+            }
+        },
+        "protocol_version": "2.2.0",
+        "heartbeat": 0
+    },
+    "22": {
+        "sketch_version": "1.0",
+        "battery_level": 91,
+        "sensor_id": 22,
+        "type": 17,
+        "sketch_name": "JMP STUDIO_22",
+        "children": {
+            "1": {
+                "id": 1,
+                "type": 6,
+                "description": "TempSTUDIO_22",
+                "values": {
+                    "0": "21.27"
+                }
+            },
+            "2": {
+                "id": 2,
+                "type": 7,
+                "description": "HumSTUDIO_22",
+                "values": {
+                    "1": "56.14"
+                }
+            },
+            "7": {
+                "id": 7,
+                "type": 30,
+                "description": "Batt STUDIO_22",
+                "values": {
+                    "38": "3.34"
+                }
+            }
+        },
+        "protocol_version": "2.2.0",
+        "heartbeat": 0
+    }
+}
