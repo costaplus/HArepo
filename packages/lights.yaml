@@ -1,0 +1,523 @@
+#################################################################
+#                                                               #
+#                    Packages/Lights & plug                     #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'lights'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## Lights
+    ################################################
+
+    light.yeelight_rgb_7811dc6847c2:
+      hidden: true
+
+    light.yeelight_rgb_7811dcd94503:
+      hidden: true
+
+    light.yeelight_bedside_7811dc905b0c:
+      hidden: true  
+
+    light.gateway_light_f0b429b45c97:
+      friendly_name: Xiaomi Gateway
+      icon: mdi:lightbulb-outline
+
+    light.yeelight_luce_studio:
+      icon: mdi:lightbulb
+
+    light.yeelight_luce_ingresso:
+      icon: mdi:lightbulb
+
+    light.yeelight_luce_bedside:
+      icon: mdi:lightbulb
+
+    light.hue_color_lamp_1:
+      icon: mdi:lightbulb
+
+    light.hue_color_lamp_2:
+      icon: mdi:lightbulb
+
+    light.hue_color_lamp_3:
+      icon: mdi:lightbulb
+
+    light.hue_lightstrip_plus_1:
+      icon: mdi:lightbulb
+
+    light.xiaomi_philips_camera:
+      icon: mdi:lightbulb
+
+    light.xiaomi_philips_sala:  
+      icon: mdi:lightbulb
+
+    switch.orviboplug1:
+      friendly_name: Orvibo Plug S20
+      icon: mdi:power-plug
+
+####################################################
+#                                                  #
+#                      HUE                         #
+#                                                  #
+####################################################  
+hue:
+####################################################
+#                                                  #
+#                PLATFORM  LIGHTS                  #
+#                                                  #
+####################################################
+#https://home-assistant.io/components/light/
+#https://home-assistant.io/components/light.yeelight/
+light:
+  - platform: yeelight
+    devices:
+      192.168.1.142:
+        name: Yeelight Luce Studio
+      192.168.1.143:
+        name: Yeelight Luce Ingresso
+      192.168.1.141:
+        name: Yeelight Luce BEDSIDE
+
+#https://www.home-assistant.io/components/light.xiaomi_miio/
+
+#  - platform: xiaomi_miio
+#    name: Xiaomi Philips Sala
+#    host: 192.168.1.144
+#    token: a4f943626220b9490f70070585f008dd
+
+  - platform: xiaomi_miio
+    name: Xiaomi Philips Camera
+    host: 192.168.1.145
+    token: 31e2c35ffc15de6618f14e181af4e9ce
+
+####################################################
+#                                                  #
+#             ORVIBO SWITCHES / SONOFF MQTT        #
+#                                                  #
+####################################################        
+switch:        
+  - platform: orvibo
+    discovery: false
+    switches:
+      - host: 192.168.1.108
+        name: Orviboplug-1
+#        mac: AC:CF:23:97:70:58
+
+  - platform: mqtt
+    name: "Piantana Sala"
+    state_topic: "stat/sonoff-01/POWER"
+    command_topic: "cmnd/sonoff-01/POWER"
+    availability_topic: "tele/sonoff-01/LWT"
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+#    qos: 1
+#    optimistic: false
+#################################################################
+#                                                               #
+#                           Group                               #
+#                                                               #
+#################################################################
+
+group:
+####################################################
+#                     LIGHTS                       #
+####################################################
+
+  Bedroom Lights:
+    name: Luci Camera Letto
+    view: no
+    entities:
+    - light.yeelight_luce_bedside
+    - light.xiaomi_philips_camera
+    - light.hue_color_lamp_1
+    - light.hue_color_lamp_2
+    - light.hue_color_lamp_3
+    - light.hue_lightstrip_plus_1
+
+  Yeelights:
+    name: Luci Yeelight
+    view: no
+    entities:
+    - light.yeelight_luce_studio
+    - light.yeelight_luce_ingresso
+    - light.yeelight_luce_bedside
+
+  Living Room Lights:
+    name: Luci Sala
+    view: no
+    entities:
+    - switch.piantana_sala
+
+  Ingresso Lights:
+    name: Luci Ingresso
+    view: no
+    entities:
+    - light.gateway_light_f0b429b45c97
+    - light.yeelight_luce_ingresso
+      
+#################################################################
+#                                                               #
+#                         Automations                           #
+#                                                               #
+#################################################################
+
+automation:
+#########################################################
+#                                                       #
+#               PULSANTE CAMERA XIAOMI                  #
+#                                                       #
+#########################################################
+ 
+  - alias: 'Accensione Hue Strip'
+    trigger:
+      platform: event
+      event_type: click
+      event_data:
+        entity_id: binary_sensor.switch_158d000202fd3f
+        click_type: long_click_press
+    action:
+      service: light.toggle
+      entity_id: light.hue_lightstrip_plus_1
+#--------------------------------------------------------
+
+  - alias: 'Accensione Hue Lights'
+    trigger:
+      platform: event
+      event_type: click
+      event_data:
+        entity_id: binary_sensor.switch_158d000202fd3f
+        click_type: single
+    action:
+      service: light.toggle
+      entity_id:
+        - light.hue_color_lamp_1
+        - light.hue_color_lamp_2
+        - light.hue_color_lamp_3
+#--------------------------------------------------------
+
+  - alias: 'Accensione Luce Romina'
+    trigger:
+      platform: event
+      event_type: click
+      event_data:
+        entity_id: binary_sensor.switch_158d000202fd3f
+        click_type: double
+    action:
+      service: light.toggle
+      entity_id: light.xiaomi_philips_camera
+
+#########################################################
+#                                                       #
+#                PULSANTE SALA XIAOMI                   #
+#                                                       #
+#########################################################
+
+  - alias: 'Accensione Piantana Sala'
+    trigger:
+      platform: event
+      event_type: click
+      event_data:
+        entity_id: binary_sensor.switch_158d0002016342
+        click_type: single
+    action:
+      service: switch.toggle
+      entity_id: switch.piantana_sala
+
+  - alias: 'Accensione Luce Ingresso2'
+    trigger:
+      platform: event
+      event_type: click
+      event_data:
+        entity_id: binary_sensor.switch_158d0002016342
+        click_type: double
+    action:
+      service: light.toggle
+      entity_id: light.yeelight_luce_ingresso
+
+#########################################################
+#                                                       #
+#               PULSANTE INGRESSO XIAOMI                #
+#                                                       #
+#########################################################
+
+  - alias: 'Accensione Luce Studio'
+    trigger:
+      platform: event
+      event_type: click
+      event_data:
+        entity_id: binary_sensor.switch_158d00013ecf04
+        click_type: double
+    action:
+      service: light.toggle
+      entity_id: light.yeelight_luce_studio
+#--------------------------------------------------------
+
+  - alias: 'Accensione Luce Ingresso'
+    trigger:
+      platform: event
+      event_type: click
+      event_data:
+        entity_id: binary_sensor.switch_158d00013ecf04
+        click_type: single
+    action:
+      service: light.toggle
+      entity_id: light.yeelight_luce_ingresso
+
+#########################################################
+#                                                       #
+#               Luminosità gateway Xiaomi               #
+#                                                       #
+#########################################################
+  - alias: 'Cambia Luminosità Luce Gateway'
+    trigger:
+      platform: state
+      entity_id: binary_sensor.motion_sensor_158d000223684f
+      to: 'on'
+    condition:
+      condition: and
+      # 'when dark' condition: either after sunset or before sunrise
+      conditions:
+      - condition: state
+        entity_id: sensor.day_night
+        state: 'Night'
+      - condition: numeric_state
+        below: '200'
+        entity_id: sensor.illumination_f0b429b45c97
+    action:
+      - service: light.turn_on
+        data:
+          entity_id: light.gateway_light_f0b429b45c97
+          brightness_pct: 100
+          color_name: white
+      - delay: '00:01:00'
+      - service: light.turn_on
+        data:
+          entity_id: light.gateway_light_f0b429b45c97
+          brightness_pct: 10
+          color_name: white    
+
+#########################################################
+#                                                       #
+#              OPEN FRONT DOORS LIGHTS ON               #
+#                                                       #
+#########################################################
+
+# all'apertura porta accende due luci manda notifica e poi abbassa la luce del gateway  
+  - alias: 'Apertura Porta Principale Notturna'
+    trigger:
+      platform: state
+      entity_id: binary_sensor.door_window_sensor_158d00011854f0
+      from: 'off'
+      to: 'on'
+    condition:
+      condition: or  
+      # 'when dark' condition: either after sunset or before sunrise
+      conditions:
+       - condition: sun
+         after: sunset
+       - condition: sun
+         before: sunrise
+    action:
+      - service: light.turn_on
+        data:
+          entity_id:
+            - light.gateway_light_f0b429b45c97
+            - light.yeelight_luce_ingresso
+          brightness_pct: 100
+      - service: switch.turn_on
+        data:
+          entity_id:
+            - switch.piantana_sala
+      - service: notify.telegram
+        data:
+          title: '-- ATTENZIONE --'
+          message: 'Porta Ingresso Aperta in orario serale'
+      #- wait_template: "{{ is_state(trigger.entity_id, 'off') }}"
+      - delay: 00:00:10
+      - service: tts.google_say
+        entity_id: media_player.salotto
+        data_template: 
+          message: >-
+            {{ [
+            "bentornati a casa, ai vostri ordini " ,
+            "bentornati a casa  Romina, Gianpi e Livia Maria " ,
+            ] |random }}
+      - delay: '00:01:00' 
+      - service: light.turn_on
+        data:
+          entity_id: light.gateway_light_f0b429b45c97
+          brightness_pct: 10
+#-------------------------------------------------------------------
+
+  - alias: 'Apertura Porta Principale Diurna Luce ON'
+    initial_state: true
+    hide_entity: true
+    trigger:
+      platform: state
+      entity_id: binary_sensor.door_window_sensor_158d00011854f0
+      to: 'on'
+    condition:
+      - condition: state
+        entity_id: sensor.day_night
+        state: 'Day'
+    action:
+      - service: light.turn_on
+        data:
+          entity_id: light.yeelight_luce_ingresso
+          brightness_pct: 100
+      - delay: 00:00:10
+      - service: tts.google_say
+        entity_id: media_player.salotto
+        data_template: 
+          message: >-
+            {{ [
+            "bentornati a casa, ai vostri ordini " ,
+            "bentornati a casa  Romina, Gianpi e Livia Maria " ,
+            "che la forza sia con te " ,
+            "ben tornati sono impaziente di eseguire i vostri comandi "
+            ] |random }}
+#--------------------------------------------------------
+  - alias: 'Apertura Porta Principale Diurna Luce OFF'
+    initial_state: true
+    hide_entity: true
+    trigger:
+      platform: state
+      entity_id: binary_sensor.door_window_sensor_158d00011854f0
+      to: 'off'
+      for:
+        minutes: 1
+    condition:
+      - condition: state
+        entity_id: sensor.day_night
+        state: 'Day'
+    action:
+      - service: light.turn_off
+        entity_id: light.yeelight_luce_ingresso
+
+#########################################################
+#                                                       #
+#                TURN OFF/ON XIAOMI LIGHTS              #
+#                                                       #
+#########################################################
+
+  - alias: 'Spegni Luci Serali'
+    trigger:
+      platform: sun
+      event: sunrise
+#     offset: '00:30:00'
+    action:
+      - service: light.turn_off
+        data:
+          entity_id: 
+            - light.gateway_light_f0b429b45c97
+            - light.xiaomi_philips_camera
+
+  - alias: 'Accendi Luci Serali'
+    trigger:
+      - platform: sun
+        event: sunset
+#      offset: '-00:30:00'
+      - platform: state
+        entity_id:  binary_sensor.motion_sensor_158d00010e4ea5
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: sensor.day_night
+        state: 'Night'
+    action:
+      - service: light.turn_on
+        data:
+          entity_id: light.xiaomi_philips_camera
+          brightness_pct: 40
+          color_name: white
+      - delay: '00:00:30' 
+      - service: light.turn_on
+        data:
+          entity_id: light.xiaomi_philips_camera
+          brightness_pct: 10
+
+#########################################################
+#                                                       #
+#                LUCE STUDIO (DA CAMBIARE)              #
+#                                                       #
+#########################################################
+
+  - alias: 'Accensione Luce Studio al passaggio'
+    trigger:
+      platform: state
+      entity_id:  binary_sensor.pir_studio
+      to: 'on'
+    condition:
+      condition: or  
+      # 'when dark' condition: either after sunset or before sunrise
+      conditions:
+        - condition: sun
+          after: sunset
+        - condition: sun
+          before: sunrise
+    action:
+      - service: light.turn_on
+        data:
+          entity_id: light.yeelight_luce_studio
+          brightness_pct: 100
+          rgb_color:
+          - 255
+          - 255
+          - 255
+      - delay: '00:02:00'
+      - service: light.turn_off
+        data:
+          entity_id: light.yeelight_luce_studio
+          
+#########################################################
+#                                                       #
+#       NOTIFY IF YEELIGHT e XIAOMI LIGHT OFFLINE       #
+#                                                       #
+#########################################################
+
+  - alias: 'Notify if Lights are Offline'
+    trigger:
+      - platform: state
+        entity_id:
+          - light.yeelightstudio
+          - light.yeelightingresso
+          - light.yeelightbedside
+          #- light.xiaomi_philips_camera
+          - light.gateway_light_f0b429b45c97          
+          #- light.xiaomi_philips_sala
+          #- light.hue_color_lamp_1
+          #- light.hue_color_lamp_2
+          #- light.hue_color_lamp_3
+          #- light.hue_lightstrip_plus_1
+        to: 'unavailable'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: "-- LIGHTS-ATTENZIONE --"
+          message: "{{ trigger.to_state.attributes.friendly_name }} è offline"
+
+#########################################################
+#                                                       #
+#                   END CONFIGURATION                   #
+#                                                       #
+#########################################################

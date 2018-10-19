@@ -1,0 +1,113 @@
+####################################################
+#                                                  #
+#                  CUSTOM GAUGE                    #
+#                                                  #
+####################################################
+
+  - icon: mdi:gauge
+    title: Status Device
+    id: statusdevice
+    cards:
+### CUSTOM RPI
+      - type: vertical-stack
+        cards:
+        - type: custom:gauge-card
+          title: Temperatura CPU
+          entity: sensor.cpu_temperature
+          severity:
+            red: 65
+            green: 0
+            amber: 60
+        - type: custom:gauge-card
+          title: RPI Memory
+          entity: sensor.memory_use_percent
+          severity:
+            red: 80
+            green: 0
+            amber: 60
+        - type: custom:gauge-card
+          title: Processor Use
+          entity: sensor.processor_use
+          severity:
+            red: 80
+            green: 0
+            amber: 60
+        - type: custom:gauge-card
+          title: Disk Use
+          entity: sensor.disk_use_percent_home
+          severity:
+            red: 80
+            green: 0
+            amber: 60
+### CUSTOM TEMPERATURE EXTERNAL
+      - type: vertical-stack
+        cards:
+        - type: custom:gauge-card
+          title: Temperatura Studio Esterna
+          entity: sensor.jmp_weather_14_14_1
+          severity:
+            red: 30
+            green: 0
+            amber: 20
+        - type: custom:gauge-card
+          title: Temperatura Sala Esterna
+          entity: sensor.jmp_weather_16_16_2
+          severity:
+            red: 30
+            green: 0
+            amber: 20
+### CUSTOM HUM EXTERNAL
+      - type: vertical-stack
+        cards:
+        - type: custom:gauge-card
+          title: Hum Studio Esterna
+          entity: sensor.jmp_weather_14_14_2
+          severity:
+            red: 80
+            green: 0
+            amber: 50
+        - type: custom:gauge-card
+          title: Hum Sala Esterna
+          entity: sensor.jmp_weather_16_16_3
+          severity:
+            red: 80
+            green: 0
+            amber: 50
+### CUSTOM TEMPERATURE INTERNAL
+      - type: vertical-stack
+        cards:
+        - type: custom:gauge-card
+          title: Temperatura Camera
+          entity: sensor.jmp_bedroom_13_13_2
+          severity:
+            red: 30
+            green: 0
+            amber: 20
+        - type: custom:gauge-card
+          title: Temperatura Cucina
+          entity: sensor.thcucina_temp
+          severity:
+            red: 30
+            green: 0
+            amber: 20
+        - type: custom:gauge-card
+          title: Temperatura Livia
+          entity: sensor.jmp_livia_21_21_1
+          severity:
+            red: 30
+            green: 0
+            amber: 20
+        - type: custom:gauge-card
+          title: Temperatura Ingresso
+          entity: sensor.temperature_158d0001d6be78
+          severity:
+            red: 30
+            green: 0
+            amber: 20
+        - type: custom:gauge-card
+          title: Temperatura Studio
+          entity: sensor.jmp_studio_22_22_1
+          severity:
+            red: 30
+            green: 0
+            amber: 20

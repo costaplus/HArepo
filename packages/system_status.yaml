@@ -1,0 +1,391 @@
+#################################################################
+#                                                               #
+#                    Packages/Core Network                      #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'system_status'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## sensor
+    ################################################
+
+    sensor.disk_use_percent_home:
+      <<: *customize
+      friendly_name: Disk Use
+
+    sensor.speedtest_ping:
+      <<: *customize
+      friendly_name: Ping
+      icon: mdi:pulse
+
+    sensor.speedtest_download:
+      <<: *customize
+      friendly_name: Download
+      icon: mdi:arrow-down-bold
+
+    sensor.speedtest_upload:
+      <<: *customize
+      friendly_name: Upload
+      icon: mdi:arrow-up-bold
+
+    sensor.since_last_boot_templated:
+      <<: *customize
+      friendly_name: Since last boot
+
+    sensor.log_db_file_size:
+      <<: *customize
+      friendly_name: Home Assistant Log Db
+      icon: mdi:database
+
+    sensor.imac_studio_templated:
+      <<: *customize
+      friendly_name: iMac Studio
+ 
+#################################################################
+#                                                               #
+#                           Group                               #
+#                                                               #
+#################################################################
+
+group:
+  core network:
+    name: Core Network
+    view: no
+    entities:
+      - binary_sensor.ping__zyxel_router
+ 
+  core devices:
+    name: Core Domotic Devices
+    view: no
+    entities:
+      - binary_sensor.ping__mysensors_gateway
+      - binary_sensor.ping__philips_hue_bridge
+      - binary_sensor.ping__xiaomi_aquara_gateway
+      - binary_sensor.ping__netatmo_relay
+      - binary_sensor.ping__dafang1_cam
+      - binary_sensor.ping__dafang2_cam
+ 
+  media devices:
+    name: Media Devices
+    view: no
+    entities:
+      - binary_sensor.ping__google_home
+      - binary_sensor.ping__broadlink_rm_mini_3
+  
+  rpi resources:
+    name: RPi Resources
+    view: no
+    entities:
+      - sensor.processor_use
+      - sensor.disk_use_percent_home
+      - sensor.memory_use_percent
+      - sensor.cpu
+      - sensor.cpu_temperature
+      - sensor.since_last_boot_templated
+      - sensor.load_1m
+      - sensor.load_5m
+      - sensor.load_15m
+
+  internet:
+    name: Internet Performance
+    view: no
+    entities:
+      - sensor.speedtest_ping
+      - sensor.speedtest_download
+      - sensor.speedtest_upload
+      - sensor.external_ip
+    
+  HA DB Dimension:
+    name: HA Db Dim
+    view: no
+    entities:
+    - sensor.db_file_size
+
+#################################################################
+#                                                               #
+#                        Wake on lan                            #
+#                                                               #
+#################################################################
+switch:
+  - platform: wake_on_lan
+    name: "iMac Studio"
+    mac_address: "38-C9-86-0A-7B-01"
+    host: 192.168.1.171
+      
+#################################################################
+#                                                               #
+#                           Sensors                             #
+#                                                               #
+#################################################################
+sensor:
+#https://home-assistant.io/components/sensor.template/
+  - platform: template
+    sensors:
+      imac_studio_templated:
+        value_template: >-
+          {% if is_state('switch.imac_studio', 'on') %} 
+            Acceso
+          {% else%} 
+            Spento 
+          {% endif %}
+        icon_template: >-
+          {% if is_state('switch.imac_studio', 'on') %} 
+            mdi:desktop-mac
+          {% else%} 
+            mdi:desktop-mac-dashboard
+          {% endif %}
+####################################################
+#                                                  #
+#          INTERNET PERFORMANCE METRICS            #
+#                                                  #
+####################################################
+#https://home-assistant.io/components/sensor.speedtest/
+  - platform: speedtest
+    server_id: 16948
+    monitored_conditions:
+      - download
+      - upload
+      - ping
+    hour:
+      - 0
+      - 3
+      - 6
+      - 9
+      - 12
+      - 15
+      - 18
+      - 21
+####################################################
+#                                                  #
+#              HA SERVER METRICS                   #
+#                                                  #
+####################################################
+#https://home-assistant.io/components/sensor.systemmonitor/
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+        arg: /home
+      - type: memory_use_percent
+      - type: swap_use_percent
+      - type: processor_use
+      - type: since_last_boot
+#- type: network_in
+#arg: eth0
+#- type: network_out
+#arg: eth0
+      - type: load_1m
+      - type: load_5m
+      - type: load_15m
+
+#https://home-assistant.io/components/sensor.cpuspeed/
+  - platform: cpuspeed
+    name: CPU
+
+#https://www.home-assistant.io/components/sensor.command_line/
+  - platform: command_line
+    name: CPU Temperature
+    command: "cat /sys/class/thermal/thermal_zone0/temp"
+    unit_of_measurement: "°C"
+    value_template: '{{ value | multiply(0.001) | round(1) }}'
+
+####################################################
+#                                                  #
+#                HA DB DIMENSION                   #
+#                                                  #
+####################################################
+    
+  - platform: command_line
+    name: DB File Size
+    command: "du -m /home/homeassistant/.homeassistant/home-assistant_v2.db | cut -f1"
+    unit_of_measurement: 'MB'
+    value_template: '{{ value | int - 1 }}'
+ 
+#https://home-assistant.io/components/sensor.template/
+  - platform: template
+    sensors:
+      since_last_boot_templated:
+        value_template: >-
+          {%- set slb = states.sensor.since_last_boot.state.split(' ') -%}
+          {%- set count = slb | length -%}
+          {%- set hms = slb[count - 1] -%}
+          {%- set hms_trimmed = hms.split('.')[0] -%}
+          {%- set hms_split = hms_trimmed.split(':') -%}
+          {%- set hours = hms_split[0] | int -%}
+          {%- if count == 3 -%}
+            {{ slb[0] ~ ' ' ~ slb[1] ~ ' ' }}
+          {%- endif -%}
+          {%- if hours > 0 -%}
+            {%- if hours == 1 -%}
+              1 hour
+            {%- else -%}
+              {{ hours }} hours
+            {%- endif -%}
+          {%- endif -%}
+ 
+  - platform: rest
+    scan_interval: 86400
+    resource: https://icanhazip.com
+    name: External IP
+    value_template: '{{ value }}'
+        
+#################################################################
+#                                                               #
+#                       Binary Sensors                          #
+#                                                               #
+#################################################################
+
+binary_sensor:
+#https://home-assistant.io/components/binary_sensor.ping/
+
+  - platform: ping
+    host: 192.168.1.1
+    name: PING - Zyxel Router
+  - platform: ping
+    host: 192.168.1.100
+    name: PING - Philips Hue Bridge
+    scan_interval: 3600
+  - platform: ping
+    host: 192.168.1.103
+    name: PING - MySensors Gateway
+  - platform: ping
+    host: 192.168.1.105
+    name: PING - Xiaomi Aquara Gateway
+  - platform: ping
+    host: 192.168.1.141
+    name: PING - Broadlink RM Mini 3
+  - platform: ping
+    host: 192.168.1.104
+    name: PING - Google Home
+  - platform: ping
+    host: 192.168.1.106
+    name: PING - Netatmo Relay
+  - platform: ping
+    host: 192.168.1.151
+    name: PING - Dafang1 Cam
+  - platform: ping
+    host: 192.168.1.150
+    name: PING - Dafang2 Cam
+          
+#################################################################
+#                                                               #
+#                          Automations                          #
+#                                                               #
+################################################################# 
+
+automation:
+## Notify of High Disk Use
+  - alias: Disk Use Alarm
+    initial_state: true
+    hide_entity: true
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.disk_use_
+      above: 50
+    action:
+      - service: notify.telegram
+        data:
+          message: 'Warning - HA Server Disk Use is above 50%'
+          
+## Notify of High CPU Usage
+  - alias: CPU Use Alarm
+    initial_state: true
+    hide_entity: true
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.processor_use
+      above: 30
+    action:
+      - service: notify.telegram
+        data:
+          message: 'Warning - HA Server Processor above 30%'
+          
+## Notify if CPU Temperature is High
+  - alias: CPU Temp Alarm
+    initial_state: true
+    hide_entity: true
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.cpu_temperature
+      above: 60
+    action:
+      - service: notify.telegram
+        data:
+          message: 'Warning - HA Server CPU Temp Above 60 °C'
+
+## Notify if ISP Download Speed has dropped
+  - alias: Internet Download Speed Drop
+    initial_state: true
+    hide_entity: true
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.speedtest_download
+      below: 30
+    action:
+      - service: notify.telegram
+        data:
+          message: 'Warning - ISP Download Speed is lower then 30 Mbps'
+          
+## Notify if core device are offline
+  - alias: Core Domotic Devices Offline
+    initial_state: true
+    hide_entity: true
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.ping__broadlink_rm_mini_3
+          - binary_sensor.ping__mysensors_gateway 
+          - binary_sensor.ping__philips_hue_bridge
+          - binary_sensor.ping__zyxel_router
+          - binary_sensor.ping__xiaomi_aquara_gateway
+          - binary_sensor.ping__google_home
+          - binary_sensor.ping__netatmo_relay
+          - binary_sensor.ping__dafang1_cam
+          - binary_sensor.ping__dafang2_cam
+        to: 'off'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: "-- HA device offline --"
+          message: "{{ trigger.to_state.attributes.friendly_name }} is offline"
+
+## Notify me when I get a new public IP from my ISP
+  - alias: Notify Of New External IP e upgrade Cloudflare
+    initial_state: true
+    hide_entity: true
+    trigger:
+      platform: state
+      entity_id: sensor.external_ip
+    condition:
+      - condition: template
+        value_template: "{% if trigger.from_state and trigger.to_state %} true {% else %} false {% endif %}"
+      - condition: template
+        value_template: "{% if trigger.from_state.state == 'unknown' %} false {% else %} true {% endif %}"
+      - condition: template
+        value_template: "{% if trigger.to_state.state == 'unknown' %} false {% else %} true {% endif %}"
+      - condition: template
+        value_template: "{{ trigger.from_state.state != trigger.to_state.state }}"
+    action:
+      - service: notify.telegram
+        data_template:
+          title: "-- IP WAN CHANGED --"
+          message: "External IP changed from {{ trigger.from_state.state }} to {{ trigger.to_state.state }}"
+      - service: cloudflare.update_records

@@ -1,0 +1,152 @@
+#################################################################
+#                                                               #
+#                       Packages/Sensori                        #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'cube'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## sensor
+    ################################################
+
+    sensor.0x00158d000269e844:
+      <<: *customize
+      friendly_name: CUBO Studio
+
+    sensor.bat_cubo_studio:
+      <<: *customize
+      friendly_name: Cubo Studio
+      icon: mdi:battery
+      unit_of_measurement: "%"
+
+####################################################
+#                                                  #
+#                   SENSORS                        #
+#                                                  #
+####################################################
+sensor:
+  - platform: template
+    sensors:
+      bat_cubo_studio:
+        unit_of_measurement: "%" 
+        value_template: '{{ state_attr("sensor.0x00158d000269e844", "battery") | int }}'
+
+####################################################
+#                                                  #
+#                  XIAOMI CUBE                     #
+#                                                  #
+####################################################
+automation:
+  - alias: aumenta luminosita luce ingresso con cubo
+    trigger:
+      platform: mqtt
+      topic: 'zigbee2mqtt/0x00158d000269e844'
+    condition:
+    - condition: template
+      value_template: "{{ 'rotate_right' == trigger.payload_json.action }}"
+    - condition: state
+      entity_id: light.yeelight_luce_ingresso
+      state: 'on'
+    action:
+    - service: light.turn_on
+      entity_id: light.yeelight_luce_ingresso
+      data_template:
+        brightness: >-
+          {{ states.light.yeelight_luce_ingresso.attributes.brightness | round(0) + 50 }}
+####################################################
+  - alias: diminuisce luminosita luce ingresso con cubo
+    trigger:
+      platform: mqtt
+      topic: 'zigbee2mqtt/0x00158d000269e844'
+    condition:
+    - condition: template
+      value_template: "{{ 'rotate_left' == trigger.payload_json.action }}"
+    - condition: state
+      entity_id: light.yeelight_luce_ingresso
+      state: 'on'
+    action:
+      service: light.turn_on
+      entity_id: light.yeelight_luce_ingresso
+      data_template:
+        brightness: >-
+          {{ states.light.yeelight_luce_ingresso.attributes.brightness | round(0) - 50 }}
+#################################################### 
+  - alias: accende spegne TV LG con cubo
+    trigger:
+      platform: mqtt
+      topic: 'zigbee2mqtt/0x00158d000269e844'
+    condition:
+      condition: template
+      value_template: "{{ 'shake' == trigger.payload_json.action }}"
+    action:
+      service: switch.toggle
+      entity_id: switch.tv_lg
+####################################################
+  - alias: accende spegne piantana sala con cubo
+    trigger:
+      platform: mqtt
+      topic: 'zigbee2mqtt/0x00158d000269e844'
+    condition:
+      condition: template
+      value_template: "{{ 'tap' == trigger.payload_json.action }}"
+    action:
+      service: switch.toggle
+      entity_id: switch.piantana_sala
+####################################################
+  - alias: accende spegne luce studio con cubo
+    trigger:
+      platform: mqtt
+      topic: 'zigbee2mqtt/0x00158d000269e844'
+    condition:
+      condition: template
+      value_template: "{{ 'flip90' == trigger.payload_json.action }}"
+    action:
+      service: light.toggle
+      entity_id: light.yeelight_luce_studio
+####################################################
+  - alias: accende spegne luce bedside con cubo
+    trigger:
+      platform: mqtt
+      topic: 'zigbee2mqtt/0x00158d000269e844'
+    condition:
+      condition: template
+      value_template: "{{ 'flip180' == trigger.payload_json.action }}"
+    action:
+      service: light.toggle
+      entity_id: light.yeelight_luce_bedside
+####################################################
+  - alias: accende spegne luce ingresso con cubo
+    trigger:
+      platform: mqtt
+      topic: 'zigbee2mqtt/0x00158d000269e844'
+    condition:
+      condition: template
+      value_template: "{{ 'slide' == trigger.payload_json.action }}"
+    action:
+      service: light.toggle
+      entity_id: light.yeelight_luce_ingresso 
+#################################################################
+#                                                               #
+#                             END                               #
+#                                                               #
+#################################################################

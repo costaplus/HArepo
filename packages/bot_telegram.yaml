@@ -1,0 +1,342 @@
+#################################################################
+#                                                               #
+#                       Packages/Presence                       #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'bot_telegram'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+#################################################################
+#                                                               #
+#                         Automation                            #
+#                                                               #
+################################################################# 
+automation:
+####################################################
+#                                                  #
+#                     Start UP                     #
+#                                                  #
+####################################################
+
+  - alias: "Startup Notification"
+    trigger:
+      platform: homeassistant
+      event: start
+    action:
+    - service: notify.telegram
+      data:
+        title: '*HA Start*'
+        message: 'Your _Home Assistant_ has *started*.'
+        data:
+          inline_keyboard:
+            - 'Home:/Home, RpiTemp:/rpitemp, Pot:/potenza Temp:/temperature'
+        target: 
+          - !secret telegram_chatid
+    - service: shell_command.log
+      data_template:
+        text: >
+          - HA Start. WAN IP: '{{ states.sensor.external_ip.state }}'
+####################################################
+#                                                  #
+#                     CPU TEMP                     #
+#                                                  #
+####################################################
+
+  - alias: "Rpi temperature"
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_callback
+      event_data:
+        data: '/rpitemp'
+    action:
+    - service: notify.telegram
+      data_template:
+        title: '*Raspberry CPU Temperature*'
+        message: '{{ states.sensor.cpu_temperature.state }} C '
+        data:
+          inline_keyboard:
+            - 'Home:/home'
+        target: 
+          - !secret telegram_chatid
+    - service: shell_command.log
+      data_template:
+        text: >
+          - Rpi CPU Temp: '{{ states.sensor.cpu_temperature.state }} C'
+####################################################
+#                                                  #
+#                       HOME                       #
+#                                                  #
+####################################################
+  - alias: "Command home"
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_callback
+      event_data:
+        data: '/home'
+    action:
+    - service: notify.telegram
+      data:
+        title: '*HA HOME*'
+        message: 'Scegli i comandi'
+        data:
+          inline_keyboard:
+            - 'Home:/Home, RpiTemp:/rpitemp, Pot:/potenza Temp:/temperature'
+        target: 
+          - !secret telegram_chatid
+
+####################################################
+#                                                  #
+#                Consumo istantaneo                #
+#                                                  #
+####################################################           
+  - alias: 'Telegram bot that reply to power'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_callback
+      event_data:
+        data: '/potenza'
+    action:
+    - service: notify.telegram
+      data_template:
+        title: '*Power*'
+        message: 'Potenza istantanea: {{ states.sensor.jmp_energy_12_12_1.state }} Watt.'
+        data:
+          inline_keyboard:
+            - 'Home:/home'
+        target: 
+        - !secret telegram_chatid
+
+####################################################
+#                                                  #
+#                   Tutte le Temp                  #
+#                                                  #
+####################################################           
+  - alias: 'Telegram bot that reply to temp'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_callback
+      event_data:
+        data: '/temperature'
+    action:
+    - service: notify.telegram
+      data_template:
+        title: "*Temperatura Casa*"
+        message: >
+          {% macro temp_level() %}
+          {%- set upthreshold = states.input_number.soglia_max_temp.state | int -%}
+          {%- set downthreshold = states.input_number.soglia_min_temp.state | int -%}
+          {% for item in states.group.tempsensors.attributes.entity_id -%}
+          {% if (states(item) | int >= upthreshold or states(item) | int <= downthreshold) %}
+          {{ (item) | replace ("sensor.","") | replace ("_"," ") | capitalize() }} = {{ states(item) }} °C 
+          {%- if not loop.last %}{% endif -%}
+          {% endif %}
+          {% endfor %}
+          {% endmacro %}
+          {{ temp_level() }}
+        data:
+          inline_keyboard:
+            - 'Home:/home'
+        target:
+        - !secret telegram_chatid
+
+####################################################
+#                                                  #
+#                  MASTER BEDROOM                  #
+#                                                  #
+####################################################
+
+  - alias: 'Telegram bot that reply to bedroom temperature'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/bedroom-temp'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: 'Master Bedroom'
+          message: 'Ci sono {{states.sensor.jmp_bedroom_13_13_2.state}} C e {{states.sensor.jmp_bedroom_13_13_3.state}} % di umidità nella camera padronale'
+          target: 
+            - !secret telegram_chatid
+
+####################################################
+#                                                  #
+#                     CUCINA                       #
+#                                                  #
+####################################################
+
+  - alias: 'Telegram bot that reply to kitchen temperature'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/cucina-temp'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: 'Cucina'
+          message: 'Ci sono {{states.sensor.thcucina_temp.state}} C e {{states.sensor.thcucina_hum.state}} % di umidità in cucina'
+          target: 
+            - !secret telegram_chatid
+
+####################################################
+#                                                  #
+#                  CAMERA LIVIA                    #
+#                                                  #
+####################################################
+
+  - alias: 'Telegram bot that reply to Livia room temperature'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/cameralivia-temp'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: 'Camera Livia'
+          message: 'Ci sono {{states.sensor.jmp_livia_21_21_1.state}} C e {{states.sensor.jmp_livia_21_21_2.state}} % di umidità in camera di Livia'
+          target: 
+            - !secret telegram_chatid
+####################################################
+#                                                  #
+#                     STUDIO                       #
+#                                                  #
+####################################################
+
+  - alias: 'Telegram bot that reply to studio temperature'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/studio-temp'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: 'Studio'
+          message: 'Ci sono {{states.sensor.jmp_studio_22_22_1.state}} C e {{states.sensor.jmp_studio_22_22_2.state}} % di umidità nello studio'
+          target: 
+            - !secret telegram_chatid
+
+####################################################
+#                                                  #
+#                     INGRESSO                     #
+#                                                  #
+####################################################
+
+  - alias: 'Telegram bot that reply to entrance temperature'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/ingresso-temp'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: 'Ingresso'
+          message: 'Ci sono {{states.sensor.temperature_158d0001d6be78.state}} C e {{states.sensor.humidity_158d0001d6be78.state}} % di umidità in ingresso'
+          target: 
+            - !secret telegram_chatid
+
+####################################################
+#                                                  #
+#               BALCONE SALA ESTERNO               #
+#                                                  #
+####################################################
+
+  - alias: 'Telegram bot that reply to external living room temperature'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/balconesala-temp'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: 'Balcone Sala'
+          message: 'Ci sono {{states.sensor.jmp_weather_16_16_2.state}} C e {{states.sensor.jmp_weather_16_16_3.state}} % di umidità fuori al balcone'
+          target: 
+            - !secret telegram_chatid
+
+####################################################
+#                                                  #
+#                BALCONE STUDIO ESTERNO            #
+#                                                  #
+####################################################
+
+  - alias: 'Telegram bot that reply to external studio temperature'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/balconestudio-temp'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: 'Balcone Studio'
+          message: 'Ci sono {{states.sensor.jmp_weather_14_14_1.state}} C e {{states.sensor.jmp_weather_14_14_2.state}} % di umidità in fuori al balcone'
+          target: 
+            - !secret telegram_chatid
+
+####################################################
+#                                                  #
+#                       HELP                       #
+#                                                  #
+####################################################           
+  - alias: 'Telegram bot that reply to help'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/help'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: 'HELP'
+          message: 'Comandi disponibili: /pi-temp, /bedroom-temp, /cucina-temp, /cameralivia-temp, /studio-temp, /ingresso-temp, /balconesala-temp, /balconestudio-temp, /potenza, /temperature'
+          target: 
+            - !secret telegram_chatid
+
+####################################################
+#                                                  #
+#                Shell Command Log                 #
+#                                                  #
+#################################################### 
+shell_command:
+  log: /bin/bash -c "[ -d /home/homeassistant/.homeassistant/log/$(date +%Y-%m) ] || mkdir /home/homeassistant/.homeassistant/log/$(date +%Y-%m); echo '{{ now().strftime("%Y-%m-%d %H:%M:%S") }} {{text}}' >> /home/homeassistant/.homeassistant/log/$(date +%Y-%m)/day-$(date +%d).log"
+####################################################
+#                                                  #
+#            END OF CONFIGURATION FILE             #
+#                                                  #
+####################################################

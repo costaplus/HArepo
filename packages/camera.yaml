@@ -1,0 +1,74 @@
+#################################################################
+#                                                               #
+#                        Packages/Camera                        #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'camera'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+####################################################
+#                                                  #
+#                    TELECAMERE                    #
+#                                                  #
+####################################################
+ 
+#  - platform: generic
+#    name: Telecamera Livia Maria
+#    still_image_url: http://192.168.1.150/cgi-bin/currentpic.cgi?width=1920&height=1080
+camera:
+  - platform: generic
+    name: Grafana Power Image
+    still_image_url: 'http://192.168.1.101:3000/render/d-solo/680D0Azgz/sensori?orgId=1&panelId=6&from=1530736912474&to=1530823312475&width=600&height=300&tz=UTC%2B02%3A00&from=now-1d/d&to=now/d'
+    username: !secret grafana_user
+    password: !secret grafana_pass
+  - platform: generic
+    still_image_url: https://api.sat24.com/animated/IT/infraPolair/3/W_dot_%20Europe%20Standard%20Time/9263758  
+    name: Telecamera IR
+  - platform: generic
+    still_image_url: https://api.sat24.com/animated/IT/rainTMC/3/W_dot_%20Europe%20Standard%20Time/6012921  
+    name: Telecamera Pioggia
+  - platform: local_file
+    name: Grafana Energy Meter
+    file_path: /home/homeassistant/.homeassistant/downloads/energymeter.png
+  - platform: local_file
+    name: Grafana Power Meter
+    file_path: /home/homeassistant/.homeassistant/downloads/powermeter.png
+  - platform: ffmpeg
+    name: dafang2
+    input: -rtsp_transport tcp -i rtsp://192.168.1.150:8554/unicast
+  - platform: ffmpeg
+    name: dafang1
+    input: -rtsp_transport tcp -i rtsp://192.168.1.151:8554/unicast
+
+####################################################
+#                                                  #
+#                    FFMPEG                        #
+#                                                  #
+####################################################
+ffmpeg:
+  ffmpeg_bin: /usr/bin/ffmpeg
+
+
+#################################################################
+#                                                               #
+#                  End of Configuration                         #
+#                                                               #
+#################################################################

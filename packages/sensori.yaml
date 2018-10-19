@@ -1,0 +1,446 @@
+#################################################################
+#                                                               #
+#                       Packages/Sensori                        #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'sensori'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## sensor
+    ################################################
+
+    sensor.temperature_158d0001d6be78:
+      <<: *customize
+      friendly_name: THB Ingresso - Temp
+
+    sensor.humidity_158d0001d6be78:
+      <<: *customize
+      friendly_name: THB Ingresso - Hum
+    
+    sensor.xiaomipressure:
+      <<: *customize
+      icon: mdi:gauge
+      friendly_name: "THB Ingresso - Press"
+      unit_of_measurement: 'hPa'
+ 
+    sensor.flower_1_battery:
+      <<: *customize
+      icon: mdi:battery
+      friendly_name: Batt - Sansevieria
+ 
+    sensor.flower_2_battery:
+      <<: *customize
+      icon: mdi:battery
+      friendly_name: Batt - Orchidea
+
+####################################################
+#                                                  #
+#                    SWITCH                        #
+#                                                  #
+####################################################
+
+    binary_sensor.switch_158d00013ecf04:
+      <<: *customize
+      friendly_name: SWITCH Ingresso
+
+    binary_sensor.switch_158d0002016342:
+      <<: *customize
+      friendly_name: SWITCH Sala
+
+    binary_sensor.switch_158d000202fd3f:
+      <<: *customize
+      friendly_name: SWITCH Camera
+
+####################################################
+#                                                  #
+#                  MOTION SENSOR                   #
+#                                                  #
+####################################################
+
+    binary_sensor.motion_sensor_158d00010e4ea5:
+      <<: *customize
+      friendly_name: PIR Bedroom
+
+    binary_sensor.motion_sensor_158d00013f7817:
+      <<: *customize
+      friendly_name: PIR Camera
+
+    binary_sensor.motion_sensor_158d000223684f:
+      <<: *customize
+      friendly_name: PIR Ingresso
+
+####################################################
+#                                                  #
+#                    LUX SENSOR                    #
+#                                                  #
+####################################################
+
+    sensor.illumination_158d000223684f:
+      <<: *customize
+      friendly_name: LUX Ingresso
+
+    sensor.illumination_f0b429b45c97:
+      <<: *customize
+      friendly_name: LUX Gateway
+
+####################################################
+#                                                  #
+#                  DOOR SENSOR                     #
+#                                                  #
+####################################################
+
+    binary_sensor.door_window_sensor_158d0002329f47:
+      <<: *customize
+      friendly_name: WINDOW Camera Livia
+  
+    binary_sensor.door_window_sensor_158d000232ac82:
+      <<: *customize
+      friendly_name: WINDOW Camera
+
+    binary_sensor.door_window_sensor_158d0002425ae8:
+      <<: *customize
+      friendly_name: WINDOW Bagno
+
+    binary_sensor.door_window_sensor_158d000112aec3:
+      <<: *customize
+      friendly_name: PORTA FINESTRA Studio
+  
+    binary_sensor.door_window_sensor_158d00011854f0:
+      <<: *customize
+      friendly_name: PORTA Ingresso
+
+    binary_sensor.door_window_sensor_158d00011c3087:
+      <<: *customize
+      friendly_name: PORTA FINESTRA Sala1
+
+    binary_sensor.door_window_sensor_158d00013e425d:
+      <<: *customize
+      friendly_name: PORTA FINESTRA Sala2
+####################################################
+#                                                  #
+#                  SMOKE  SENSOR                   #
+#                                                  #
+####################################################
+
+    binary_sensor.smoke_sensor_158d0001bb7dda:
+      <<: *customize
+      friendly_name: SMOKE Sensor
+
+####################################################
+#                                                  #
+#           Sensori Meteo My Sensors               #
+#                                                  #
+####################################################
+
+    sensor.jmp_energy_12_12_1:
+      <<: *customize
+      friendly_name: ENERGY Meter 12 - Watt
+      icon: mdi:flash
+
+    sensor.jmp_energy_12_12_2:
+      <<: *customize
+      friendly_name: ENERGY Meter 12 - kWh
+      icon: mdi:flash
+
+    sensor.jmp_bedroom_13_13_1:
+      <<: *customize
+      friendly_name: THB 13 Camera - Press
+      icon: mdi:gauge
+      unit_of_measurement: 'hPa'
+
+    sensor.jmp_bedroom_13_13_2:
+      <<: *customize
+      friendly_name: THB 13 Camera - Temp 
+
+    sensor.jmp_bedroom_13_13_3:
+      <<: *customize
+      friendly_name: THB 13 Camera - Hum 
+
+    sensor.jmp_bedroom_13_13_7:
+      <<: *customize
+      friendly_name: THB 13 Bedroom - Batt
+      icon: mdi:battery
+  
+    sensor.jmp_weather_14_14_1:
+      <<: *customize
+      friendly_name: TH 14 Studio - Temp
+
+    sensor.jmp_weather_14_14_2:
+      <<: *customize
+      friendly_name: TH 14 Studio - Hum
+
+    sensor.jmp_weather_14_14_7:
+      <<: *customize
+      friendly_name: TH 14 Studio - Batt
+      icon: mdi:battery
+  
+    sensor.jmp_weather_16_16_1:
+      <<: *customize
+      friendly_name: THB 16 Sala - Press
+      icon: mdi:gauge
+      unit_of_measurement: 'hPa'
+  
+    sensor.jmp_weather_16_16_2:
+      <<: *customize
+      friendly_name: THB 16 Sala - Temp
+
+    sensor.jmp_weather_16_16_3:
+      <<: *customize
+      friendly_name: THB 16 Sala - Hum
+
+    sensor.jmp_weather_16_16_7:
+      <<: *customize
+      friendly_name: THB 16 Sala - Batt
+      icon: mdi:battery
+
+    sensor.jmp_rain_17_17_1:
+      <<: *customize
+      friendly_name: Meteo - Lux
+      icon: mdi:white-balance-sunny
+
+    sensor.jmp_rain_17_17_2:
+      <<: *customize
+      friendly_name: Meteo - UV
+      icon: mdi:emoticon-cool
+  
+    sensor.jmp_rain_17_17_3:
+      <<: *customize
+      friendly_name: Meteo - Rain
+      icon: mdi:weather-rainy
+      unit_of_measurement: 'mm'
+
+    sensor.jmp_gassensor_18_18_1:
+      <<: *customize
+      friendly_name: GAS - MQ2 Fumo
+      unit_of_measurement: 'ppm'
+
+    sensor.jmp_gassensor_18_18_2:
+      <<: *customize
+      friendly_name: GAS - MQ2 LPG  
+      unit_of_measurement: 'ppm'
+
+    sensor.jmp_gassensor_18_18_3:
+      <<: *customize
+      friendly_name: GAS - MQ2 Alcohol 
+      unit_of_measurement: 'ppm'
+
+    sensor.jmp_gassensor_18_18_4:
+      <<: *customize
+      friendly_name: GAS - MQ135 CO2 
+      unit_of_measurement: 'ppm'
+
+    sensor.jmp_gassensor_18_18_5:
+      <<: *customize
+      friendly_name: GAS - MQ135 NH4 
+      unit_of_measurement: 'ppm'
+
+    sensor.jmp_gassensor_18_18_6:
+      <<: *customize
+      friendly_name: GAS - MQ135 Solfati
+      unit_of_measurement: 'ppm'
+
+    sensor.jmp_livia_21_21_1:
+      <<: *customize
+      friendly_name: TH 21 Camera Livia - Temp
+ 
+    sensor.jmp_livia_21_21_2:
+      <<: *customize
+      friendly_name: TH 21 Camera Livia - Hum
+
+    sensor.jmp_livia_21_21_7:
+      <<: *customize
+      friendly_name: TH 21 Camera Livia - Batt
+      icon: mdi:battery
+  
+    sensor.jmp_studio_22_22_1:
+      <<: *customize
+      friendly_name: TH 22 Studio - Temp
+
+    sensor.jmp_studio_22_22_2:
+      <<: *customize
+      friendly_name: TH 22 Studio - Hum
+
+    sensor.jmp_studio_22_22_7:
+      <<: *customize
+      friendly_name: TH 22 Studio - Batt  
+      icon: mdi:battery
+####################################################
+#                                                  #
+#                     groups                       #
+#                                                  #
+####################################################
+group:
+####################################################
+#                      PIR                         #
+####################################################
+  Pir sensors:
+    name: Sensori PIR
+    view: no
+    entities:
+    - binary_sensor.motion_sensor_158d00010e4ea5
+    - binary_sensor.motion_sensor_158d00013f7817
+    - binary_sensor.motion_sensor_158d000223684f
+    - binary_sensor.dafang1_motion_sensor
+    - binary_sensor.dafang2_motion_sensor
+
+####################################################
+#                                                  #
+#                     SENSORS                      #
+#                                                  #
+####################################################
+sensor:
+#https://www.home-assistant.io/components/sensor.filesize/
+#  - platform: filesize
+#    file_paths:
+#      - /home/homeassistant/.homeassistant/home-assistant_v2.db
+#      - /home/homeassistant/.homeassistant/home-assistant.log
+
+####################################################
+#                                                  #
+#               TEMPLATE   SENSORS                 #
+#                                                  #
+####################################################
+
+  - platform: template
+    sensors:
+      xiaomipressure:
+        value_template: >
+          {{ (float(states.sensor.pressure_158d0001d6be78.state) + 41.25) | round(3) }}
+
+####################################################
+#                                                  #
+#                ALECTO TH RFLINK                  #
+#                                                  #
+####################################################
+
+  - platform: rflink
+    devices:
+      alectov4_5a28_temp:
+        name: TH-Cucina Temp
+        sensor_type: temperature
+      alectov4_5a28_hum:
+        name: TH-Cucina Hum     
+        sensor_type: humidity
+
+####################################################
+#                                                  #
+#                CLI FOR GRAFANA                   #
+#                                                  #
+####################################################
+
+  - platform: command_line
+    name: "energy meter"
+    command: 'curl -k -H "Authorization: Bearer eyJrIjoiSEdoaFJiQWdpSE5RWE5oSUdLcTY1cTI0Z2Fya1hJQloiLCJuIjoiSEEiLCJpZCI6MX0=" "http://192.168.1.101:3000/render/d-solo/680D0Azgz/sensori?orgId=1&panelId=6&from=1530736912474&to=1530823312475&width=600&height=300&tz=UTC%2B02%3A00&from=now-1d/d&to=now/d" > /home/homeassistant/.homeassistant/downloads/energymeter.png'
+    scan_interval: 6000
+    
+  - platform: command_line 
+    name: "power meter"
+    command: 'curl -k -H "Authorization: Bearer eyJrIjoiSEdoaFJiQWdpSE5RWE5oSUdLcTY1cTI0Z2Fya1hJQloiLCJuIjoiSEEiLCJpZCI6MX0=" "http://192.168.1.101:3000/render/d-solo/680D0Azgz/sensori?panelId=18&orgId=1&from=1535802048063&to=1535888448063&width=600&height=300&tz=UTC%2B02%3A00&from=now-1d/d&to=now/d" > /home/homeassistant/.homeassistant/downloads/powermeter.png'
+    scan_interval: 5900
+
+####################################################
+#                                                  #
+#                  DAFANG STATUS                   #
+#                                                  #
+####################################################
+  - platform: mqtt
+    state_topic: "myhome/dafang1"
+    name: "dafang1"
+    json_attributes:
+      - uptime
+      - ssid
+      - bitrate
+      - signal_level
+      - link_quality
+      - noise_level
+
+  - platform: mqtt
+    state_topic: "myhome/dafang2"
+    name: "dafang2"
+    json_attributes:
+      - uptime
+      - ssid
+      - bitrate
+      - signal_level
+      - link_quality
+      - noise_level
+
+
+####################################################
+#                                                  #
+#             PHILIPS CUSTOM COMPONENTS            #
+#                                                  #
+####################################################
+#  - platform: hue
+#    ip_address: 192.168.1.100
+#    token: N8hyR5FouELd5IlXWketv94m8KzPLd9bKhtrN2t6
+ 
+####################################################
+#                                                  #
+#               CERTIFICATE EXPIRY                 #
+#                                                  #
+####################################################
+
+#https://home-assistant.io/components/sensor.cert_expiry/
+#  - platform: cert_expiry
+#    host: !secret host
+#    port: 8123
+#    name: CloudFlare
+
+####################################################
+#                                                  #
+#                     SONOFFS                      #
+#                                                  #
+####################################################
+
+#https://home-assistant.io/components/sensor.mqtt/
+
+  # - platform: mqtt
+  #   name: "POW2 Energy"
+  #   state_topic: "tele/pow2/SENSOR"
+  #   value_template: '{{ value_json["ENERGY"]["Today"] }}'
+  #   unit_of_measurement: "kWh"
+  #
+  # - platform: mqtt
+  #   name: "POW2 Power"
+  #   state_topic: "tele/pow2/SENSOR"
+  #   value_template: '{{ value_json["ENERGY"]["Power"] }}'
+  #   unit_of_measurement: "W"
+  #
+  # - platform: mqtt
+  #   name: "POW2 Voltage"
+  #   state_topic: "tele/pow2/SENSOR"
+  #   value_template: '{{ value_json["ENERGY"]["Voltage"] }}'
+  #   unit_of_measurement: "V"
+  #
+  # - platform: mqtt
+  #   name: "POW2 Current"
+  #   state_topic: "tele/pow2/SENSOR"
+  #   value_template: '{{ value_json["ENERGY"]["Current"] }}'
+  #   unit_of_measurement: "A"
+
+#################################################################
+#                                                               #
+#                             END                               #
+#                                                               #
+#################################################################

@@ -1,0 +1,230 @@
+#################################################################
+#                                                               #
+#                       Packages/Daily                          #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'daily_routines'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+automation:
+#########################################################
+#                                                       #
+#                   NOTIFICHE                           #
+#                                                       #
+#########################################################
+
+  - alias: 'Apertura Balcone Studio'
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d000112aec3
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d000112aec3
+      to: 'off'
+    condition:
+      condition: or
+      conditions:
+      - condition: template
+        value_template: "{{ states.sensor.gianpi.state != 'Casa' }}"
+      - condition: state
+        entity_id: sensor.day_night
+        state: 'Night'
+    action:
+      service: notify.telegram
+      data_template:
+        title: "-- Attenzione --"
+        message: >-
+          {% if is_state("binary_sensor.door_window_sensor_158d000112aec3","on") -%}
+          La porta finestra dello studio è aperta 
+          {%- else -%} 
+          La porta finestra dello studio è chiusa 
+          {%- endif %}
+#--------------------------------------------------------
+  - alias: 'Apertura Balcone Sala 1'
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d00011c3087
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d00011c3087
+      to: 'off'
+    condition:
+      condition: or
+      conditions:
+      - condition: template
+        value_template: "{{ states.sensor.gianpi.state != 'Casa' }}"
+      - condition: state
+        entity_id: sensor.day_night
+        state: 'Night'
+    action:
+      service: notify.telegram
+      data_template:
+        title: "-- Attenzione --"
+        message: >-
+          {% if is_state("binary_sensor.door_window_sensor_158d00011c3087","on") -%}
+          La porta finestra 1 dello sala è aperta 
+          {%- else -%} 
+          La porta finestra 1 della sala è chiusa 
+          {%- endif %}
+#--------------------------------------------------------
+  - alias: 'Apertura Balcone Sala 2'
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d00013e425d
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d00013e425d7
+      to: 'off'
+    condition:
+      condition: or
+      conditions:
+      - condition: template
+        value_template: "{{ states.sensor.gianpi.state != 'Casa' }}"
+      - condition: state
+        entity_id: sensor.day_night
+        state: 'Night'
+    action:
+      service: notify.telegram
+      data_template:
+        title: "-- Attenzione --"
+        message: >-
+          {% if is_state("binary_sensor.door_window_sensor_158d00013e425d","on") -%}
+          La porta finestra 2 dello sala è aperta 
+          {%- else -%} 
+          La porta finestra 2 della sala è chiusa 
+          {%- endif %}
+ #--------------------------------------------------------
+  - alias: 'Apertura Finestra Bagno'
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002425ae8
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002425ae8
+      to: 'off'
+    condition:
+      condition: or
+      conditions:
+      - condition: template
+        value_template: "{{ states.sensor.gianpi.state != 'Casa' }}"
+      - condition: state
+        entity_id: sensor.day_night
+        state: 'Night'
+    action:
+      service: notify.telegram
+      data_template:
+        title: "-- Attenzione --"
+        message: >-
+          {% if is_state("binary_sensor.door_window_sensor_158d0002425ae8","on") -%}
+          La finestra del bagno è aperta 
+          {%- else -%} 
+          La finestra del bagno  è chiusa 
+          {%- endif %}        
+ #--------------------------------------------------------
+  - alias: 'Apertura Camera matrimoniale'
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d000232ac82
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d000232ac82
+      to: 'off'
+    condition:
+      condition: or
+      conditions:
+      - condition: template
+        value_template: "{{ states.sensor.gianpi.state != 'Casa' }}"
+      - condition: state
+        entity_id: sensor.day_night
+        state: 'Night'
+    action:
+      service: notify.telegram
+      data_template:
+        title: "-- Attenzione --"
+        message: >-
+          {% if is_state("binary_sensor.door_window_sensor_158d000232ac82","on") -%}
+          La finestra della camera padronale è aperta 
+          {%- else -%} 
+          La finestra della camera padronale è chiusa 
+          {%- endif %} 
+  #--------------------------------------------------------
+  - alias: 'Apertura Camera Livia'
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002329f47
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002329f47
+      to: 'off'
+    condition:
+      condition: or
+      conditions:
+      - condition: template
+        value_template: "{{ states.sensor.gianpi.state != 'Casa' }}"
+      - condition: state
+        entity_id: sensor.day_night
+        state: 'Night'
+    action:
+      service: notify.telegram
+      data_template:
+        title: "-- Attenzione --"
+        message: >-
+          {% if is_state("binary_sensor.door_window_sensor_158d0002329f47","on") -%}
+          La finestra della camera di Livia è aperta 
+          {%- else -%} 
+          La finestra della camera di Livia è chiusa 
+          {%- endif %} 
+
+#-------------------------------------------------------
+  - alias: forward_persistent_notifications
+    initial_state: 'on'
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: persistent_notification
+          service: create
+    action:
+      - service: notify.telegram
+        data_template:
+          message: >-
+            {% set message = trigger.event.data.service_data.message %}
+            {% if 'invalid authentication' in message or 'login attempts' in message %}
+              {{ message }}: http://www.ip-tracker.org/locator/ip-lookup.php?ip={{ message.split('from ')[1] }}
+            {% else %}
+              {{ message }}
+            {% endif %}
+#-------------------------------------------------------
+  - alias: Update GH
+    trigger:
+    - platform: time
+      hours: 7
+      minutes: 3
+    - platform: homeassistant
+      event: start
+    action:
+      - service: google_assistant.request_sync
+
+#########################################################
+#                                                       #
+#            END OF CONFIGURATION FILE                  #
+#                                                       #
+#########################################################

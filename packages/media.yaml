@@ -1,0 +1,240 @@
+#################################################################
+#                                                               #
+#                   Packages/Media Control                      #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'media'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+#################################################################
+#                                                               #
+#                           MEDIA                               #
+#                                                               #
+#################################################################
+
+media_player:
+  - platform: broadlink
+    name: LG TV Salotto
+    host: 192.168.1.109
+    mac: 78:0F:77:00:0E:AC
+    ircodes_ini: 'broadlink_media_codes/lg.ini'
+    #ping_host: 192.168.1.70
+
+#################################################################
+#                                                               #
+#                           SWITCH                              #
+#                                                               #
+#################################################################
+switch:
+  - platform: broadlink
+    host: 192.168.1.109
+    mac: 78:0F:77:00:0E:AC
+    type: rm_mini
+
+#----------------------------------------------------------------
+  - platform: template
+    switches:
+     tv_lg:
+       value_template: "{{ is_state('input_boolean.tv_lg', 'on') }}"
+       turn_on:
+         service: script.lg_tv_on
+       turn_off:
+         service: script.lg_tv_off
+         
+  - platform: template
+    switches:
+     tv_lg_mute:
+       value_template: "{{ is_state('input_boolean.tv_lg', 'on') }}"
+       turn_on:
+         service: script.lg_tv_mute
+       turn_off:
+         service: script.lg_tv_mute
+ 
+  - platform: template
+    switches:
+     tv_lg_input:
+       value_template: "{{ is_state('input_boolean.tv_lg', 'on') }}"
+       turn_on:
+         service: script.lg_tv_input
+       turn_off:
+         service: script.lg_tv_input
+
+  - platform: template
+    switches:
+     tv_lg_canali:
+       value_template: "{{ is_state('input_boolean.tv_lg', 'on') }}"
+       turn_on:
+         service: script.lg_tv_next
+       turn_off:
+         service: script.lg_tv_prev
+         
+  - platform: template
+    switches:
+     tv_lg_volume:
+       value_template: "{{ is_state('input_boolean.tv_lg', 'on') }}"
+       turn_on:
+         service: script.lg_tv_volup
+       turn_off:
+         service: script.lg_tv_voldown
+
+#################################################################
+#                                                               #
+#                        INPUT BOOLEAN                          #
+#                                                               #
+#################################################################
+input_boolean:
+  tv_lg:
+    name: Attiva TV LG con GH
+    initial: on
+    icon: mdi:google-home
+
+#################################################################
+#                                                               #
+#                        TV IR Scripts                          #
+#                                                               #
+#################################################################        
+script:
+# ON  
+  lg_tv_on:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBYAAABKpIUERQRFDUUERQRFBEUERMSEzYUNhMSEzYUNhM2FDYUNhMRFBEUERQ2ExEUERQRFBEUNRQ2FDYTEhM2FDYTNhQ2FAAFJQABKkgUAAxVAAEqSBQADQU="
+# OFF
+  lg_tv_off:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBYAAABKpIUERQRFDUUERQRFBEUERMSEzYUNhMSEzYUNhM2FDYUNhMRFBEUERQ2ExEUERQRFBEUNRQ2FDYTEhM2FDYTNhQ2FAAFJQABKkgUAAxVAAEqSBQADQU="
+# PREV
+  lg_tv_prev:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKJMUERQRFDYTEhMRFBEUERQREzYUNhQREzYUNhQ2EzYUNhQ1FBEUERQRFBETEhMRFBEUERQ2EzYUNhQ1FDYUNhM2FAAFJgABJ0sTAA0FAAAAAAAAAAA="
+# NEXT
+  lg_tv_next:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKJQSExETEjgSExEUERMSExITEjgROBITEjgROBI4EjgROBITEhMRFBETEhMSExITEhMROBI4EjgROBI4ETkROBI4EQAFKAABKEoSAA0FAAAAAAAAAAA="
+# VOL UP
+  lg_tv_volup:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKZIUERQRFDYTERQRFBEUERQREzYUNhQREzYUNhQ1FDYUNhMSEzYUERQRFBETERQRFBEUNhMSEzYUNhM2FDYUNhM2FAAFJgABKUkUAA0FAAAAAAAAAAA="
+# VOL DOWN
+  lg_tv_voldown:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKJMTEhMSEzcSExISExIUERMSEzcTNhQREzYUNhQ2EzYUNhQ2EzYUERQRExITERQRFBEUERQREzYUNhQ1FDYUNhM2FAAFJgABKEoTAA0FAAAAAAAAAAA="
+# VOL MUTE
+  lg_tv_mute:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKJQRFBETEjgRFBEUERMSExITEjgROBITEjgROBI4ETkROBI4ERQRExI4EhMRFBEUERMSExI4ETgSExI4ETgSOBE5EQAFKAABKEoSAA0FAAAAAAAAAAA="
+# 1
+  lg_tv_1:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKpIUERQREzYUERQRFBEUERMSEzYUNhMSEzYUNhM2FDYUNhM2FBEUERQREzYUERQRFBETEhM2FDYUNRQRFDYUNRQ2FAAFJQABKkgUAA0FAAAAAAAAAAA="
+# 2
+  lg_tv_2:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKpIUERQRFDUUERQRFBEUERQREzYUNhQREzYUNhQ1FDYUNhMSEzYUERQRFDUUERQRFBEUNRQRFDYUNRQRFDYUNhM2FAAFJgABKUkTAA0FAAAAAAAAAAA="
+# 3
+  lg_tv_3:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKpIUERMSEzYUERQRFBETERQRFDYUNRQRFDYUNRQ2FDYTNhQ2FDUUERQRFDYTEhMRFBEUERQRFDUUNhQRFDUUNhQ2EwAFJgABKkgUAA0FAAAAAAAAAAA="
+# 4  
+  lg_tv_4:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKpIUERQREzYUERQRFBETEhMRFDYUNhMRFDYUNhM2FDYUNRQRFBEUNhQREzYUERQRFBETNhQ2FBETNhQRFDYTNhQ2FAAFJQABKkgUAA0FAAAAAAAAAAA="
+# 5
+  lg_tv_5:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKpIUERMRFDYUERQRExITERQRFDYUNRQRFDYUNRQ2FDYTNhQ2FBETNhQRFDYUERMRFBEUERQ2ExITNhQRFDYTNhQ2FAAFJQABKkgUAA0FAAAAAAAAAAA="
+# 6
+  lg_tv_6:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKJQRFBETEjgRFBEUERMSExITEjgROBITEjgROBI4ETgSOBEUETgSOBITEjcTEhMSExITNhMSExITNxITEjcUNhM2FAAFJQABKUkUAA0FAAAAAAAAAAA="
+# 7
+  lg_tv_7:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKpIUERMSEzYUERQRFBETERQRFDYUNRQRFDYUNhM2FDYUNRQ2FDYTNhQRFDYTEhMRFBEUERQRFBETNhQRFDYTNhQ2FAAFJQABKkgUAA0FAAAAAAAAAAA="
+# 8  
+  lg_tv_8:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBYAAABKpIUERQREzYUERQRFBETERQRFDYUNRQRFDYUNhM2FDYUNRQRFBEUERQ1FDYUERQRExITNhQ2FDUUERQRFDYTNhQ2FAAFJQABKUkUAAxVAAEpSRMADQU="
+# 9
+  lg_tv_9:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKpIUERMRFDYUERQRExITERQRFDYUNRQRFDYUNRQ2FDYTNhQ2FBETEhM2FDYUERMRFBEUERQ2EzYUERQRFDYTNhQ2FAAFJQABKkgUAA0FAAAAAAAAAAA="
+# 0
+  lg_tv_0:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBQAAABKpEUERQRFDYTEhMRFBEUERQRFDUUNhQRFDUUNhQ2EzYUNhQRExITERQRFDYUERMRFBEUNhQ1FDYUNhMSEzYUNhQ1FAAFJgABKUkUAA0FAAAAAAAAAAA="
+# INPUT
+  lg_tv_input:
+    sequence:
+      - service: switch.broadlink_send_packet_192_168_1_109
+        data:
+          packet:
+            - "JgBYAAABKpIUERMSEzYUERQRFBETERQRFDYUNRQRFDYUNRQ2FDYTNhQ2FDUUERQ2FBEUERMRFBEUERQRFDUUERQ2FDYTNhQ2FAAFJQABKkgUAAxVAAEqSBQADQU="

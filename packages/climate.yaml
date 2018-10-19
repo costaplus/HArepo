@@ -1,0 +1,184 @@
+#################################################################
+#                                                               #
+#                   Packages/Climate Control                    #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'climate'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## sensor
+    ################################################
+    climate.valvola_studio:
+      <<: *customize
+      friendly_name: Valvola Studio
+    climate.valvola_salotto1:
+      <<: *customize
+      friendly_name: Valvola Salotto 1
+    sensor.apertura_valvola_salotto1:
+      <<: *customize
+      icon: mdi:timer-sand
+    binary_sensor.finestra_aperta_valvola_salotto1:
+      <<: *customize
+      icon: mdi:window-closed
+    binary_sensor.low_battery_valvola_salotto1:
+      <<: *customize
+      icon: mdi:battery-outline
+
+    climate.valvola_salotto2:
+      <<: *customize
+      friendly_name: Valvola Salotto 2
+    sensor.apertura_valvola_salotto2:
+      <<: *customize
+      icon: mdi:timer-sand
+    binary_sensor.finestra_aperta_valvola_salotto2:
+      <<: *customize
+      icon: mdi:window-closed
+    binary_sensor.low_battery_valvola_salotto2:
+      <<: *customize
+      icon: mdi:battery-outline
+
+#################################################################
+#                                                               #
+#                     Netatmo Component                         #
+#                                                               #
+#################################################################
+netatmo:
+  api_key: !secret netatmo_key
+  secret_key: !secret netatmo_secret
+  username: !secret netatmo_user
+  password: !secret netatmo_pass
+  discovery: false
+
+#netatmo2:
+#  api_key: !secret netatmo2_key
+#  secret_key: !secret netatmo2_secret
+#  username: !secret netatmo2_user
+#  password: !secret netatmo2_pass
+#  discovery: false
+
+#################################################################
+#                                                               #
+#                           CLIMATE                             #
+#                                                               #
+#################################################################
+climate:
+  - platform: netatmo
+
+  - platform: broadlink
+    name: Daikin FX Sala
+    host: 192.168.1.109
+    mac: 78:0F:77:00:0E:AC
+    ircodes_ini: 'broadlink_climate_codes/daikin_arc433a21.ini'
+    min_temp: 16
+    max_temp: 30
+    target_temp: 27
+    target_temp_step: 1
+    temp_sensor: sensor.thcucina_temp
+    default_operation: 'off'
+    default_fan_mode: auto
+    customize:
+      operations:
+        - 'off'
+        - cool
+        - heat
+      fan_modes:
+        - low
+        - mid
+        - high
+        - auto
+
+  - platform: eq3btsmart
+    devices:
+      valvola_studio:
+        mac: '00:1a:22:0e:e1:95'
+#salotto 1: 00:1a:22:0c:57:70
+#salotto 2: 00:1a:22:
+
+  - platform: mqtt 
+    qos: 1 
+    name: Valvola Salotto1
+    current_temperature_topic: thermostat/salotto1/current_temperature 
+    temperature_state_topic: thermostat/salotto1/target_temperature 
+    temperature_command_topic: thermostat/salotto1/target_temperature/set 
+    mode_state_topic: thermostat/salotto1/mode 
+    mode_command_topic: thermostat/salotto1/mode/set 
+    away_mode_state_topic: thermostat/salotto1/away 
+    away_mode_command_topic: thermostat/salotto1/away/set
+    payload_on: 'on'
+    payload_off: 'off'
+    modes:
+      - boost
+      - away 
+      - manual 
+      - auto 
+      - 'on'
+      - 'off'
+  
+  - platform: mqtt 
+    qos: 1 
+    name: Valvola Salotto2
+    current_temperature_topic: thermostat/salotto2/current_temperature 
+    temperature_state_topic: thermostat/salotto2/target_temperature 
+    temperature_command_topic: thermostat/salotto2/target_temperature/set 
+    mode_state_topic: thermostat/salotto2/mode 
+    mode_command_topic: thermostat/salotto2/mode/set 
+    away_mode_state_topic: thermostat/salotto2/away 
+    away_mode_command_topic: thermostat/salotto2/away/set
+    payload_on: 'on'
+    payload_off: 'off'
+    modes:
+      - boost
+      - away 
+      - manual 
+      - auto 
+      - 'on'
+      - 'off'
+
+#################################################################
+#                                                               #
+#                            SENSOR                             #
+#                                                               #
+#################################################################
+sensor:
+  - platform: mqtt
+    state_topic: thermostat/salotto1/valve_state
+    name: "Apertura Valvola Salotto1"
+    unit_of_measurement: "%"
+
+  - platform: mqtt
+    state_topic: thermostat/salotto2/valve_state
+    name: "Apertura Valvola Salotto2"
+    unit_of_measurement: "%"
+########################################################
+binary_sensor:
+  - platform: mqtt
+    state_topic: thermostat/salotto1/low_battery
+    name: "Low Battery Valvola Salotto1"
+  - platform: mqtt
+    state_topic: thermostat/salotto1/window_open
+    name: "Finestra Aperta Valvola Salotto1"
+  - platform: mqtt
+    state_topic: thermostat/salotto2/low_battery
+    name: "Low Battery Valvola Salotto2"
+  - platform: mqtt
+    state_topic: thermostat/salotto2/window_open
+    name: "Finestra Aperta Valvola Salotto2"

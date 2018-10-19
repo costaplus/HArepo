@@ -1,0 +1,86 @@
+#################################################################
+#                                                               #
+#                       Packages / Grafana                      #
+#                                                               #
+#################################################################
+################################################
+## Customize
+################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'grafana'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## Script
+    ################################################
+
+    script.grafana_webhook:
+      <<: *customize
+      friendly_name: "Grafana Webhook"
+      hidden: true
+      icon: mdi:webhook
+
+
+#################################################################
+#                                                               #
+#                           InfluxDB                            #
+#                                                               #
+#################################################################
+
+influxdb:
+  host: 192.168.1.101
+  port: 8086
+  database: !secret influxdb_db
+  username: !secret influxdb_user
+  password: !secret influxdb_pass
+  max_retries: 3
+  default_measurement: state
+
+#################################################################
+#                                                               #
+#                         Panel iFrame                          #
+#                                                               #
+#################################################################
+
+#panel_iframe:
+#  web_terminal:
+#    title: 'Web terminal'
+#    icon: mdi:console
+#    url: 'http://192.168.1.101:4200'
+#  
+#  grafana:
+#    title: 'Grafana'
+#    icon: mdi:chart-pie
+#    url: 'http://192.168.1.101:3000'
+
+#################################################################
+#                                                               #
+#                             Script                            #
+#                                                               #
+#################################################################
+
+script:
+  grafana_webhook:
+    sequence:
+      - condition: template
+        value_template: >-
+          {{ state != 'ok' and state != 'no_data' }}
+      - service: notify.telegram
+        data_template:
+          message: >-
+            {{ ruleName }} is {{ state }}.
+            {% for match in evalMatches %}
+              {{ match.metric }}: {{ match.value }}
+            {% endfor %}

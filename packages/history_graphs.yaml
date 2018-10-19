@@ -1,0 +1,98 @@
+
+#################################################################
+#                                                               #
+#                   Packages/History Graphs                     #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+
+
+#################################################################
+#                                                               #
+#                           Group                               #
+#                                                               #
+#################################################################
+group:
+  grafici:
+    name: Grafici
+    view: no
+    entities:      
+      - history_graph.temperatura_piante
+      - history_graph.temperatura_interna
+      - history_graph.temperatura_esterna
+      - history_graph.pressione
+      - history_graph.hum_interna
+      - history_graph.hum_esterna
+      - history_graph.energy_today
+      - history_graph.rain_today
+#################################################################
+#                                                               #
+#                       History Graphs                          #
+#                                                               #
+#################################################################
+
+history_graph:
+  gr1:
+    name: Temperatura Piante
+    entities:
+      - sensor.sansevieria_temperature
+      - sensor.orchidea_temperature
+    hours_to_show: 72
+    refresh: 300
+  gr2:
+    name: Temperatura Interna
+    entities:
+      - sensor.thcucina_temp 
+      - sensor.jmp_bedroom_13_13_2
+      - sensor.jmp_livia_21_21_1
+      - sensor.jmp_studio_22_22_1
+      - sensor.temperature_158d0001d6be78
+    hours_to_show: 72
+    refresh: 300
+  gr3:
+    name: Temperatura Esterna
+    entities:
+      - sensor.jmp_weather_14_14_1
+      - sensor.jmp_weather_16_16_2
+    hours_to_show: 72
+    refresh: 300
+  gr4:
+    name: Pressione
+    entities:
+      - sensor.xiaomipressure
+    hours_to_show: 72
+    refresh: 300
+  gr5:
+    name: Hum Interna
+    entities:
+      - sensor.thcucina_hum
+      - sensor.jmp_studio_22_22_2
+      - sensor.jmp_livia_21_21_2
+      - sensor.jmp_bedroom_13_13_3
+      - sensor.humidity_158d0001d6be78      
+    hours_to_show: 72
+    refresh: 300
+  gr6:
+    name: Hum Esterna
+    entities:
+      - sensor.jmp_weather_14_14_2
+      - sensor.jmp_weather_16_16_3
+    hours_to_show: 72
+    refresh: 300
+  gr7:
+    name: Energy Today
+    entities:
+      - sensor.energy_day
+    hours_to_show: 24
+    refresh: 300
+  gr8:
+    name: Rain Today
+    entities:
+      - sensor.rain_day
+    hours_to_show: 24
+    refresh: 300

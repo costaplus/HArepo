@@ -1,0 +1,225 @@
+# CONF GOOGLE
+#################################################################
+#                                                               #
+#                       Packages/Sensori                        #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'googleass'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+
+#################################################################
+#                                                               #
+#                          Google Home                          #
+#                                                               #
+#################################################################
+
+google_assistant:
+  project_id: !secret progettoGH
+  api_key: !secret apikeyGH
+  expose_by_default: false
+  #exposed_domains:
+  #  - switch
+  #  - light
+  # - group
+  entity_config:
+    light.bedroom:
+      name: luci stanza da letto
+      room: camera da letto
+      expose: true
+      aliases:
+        - Luci bedroom
+        - luci camera da letto
+    light.hue_color_lamp_1:
+      room: camera da letto
+      name: luce camera 1
+      expose: true
+      aliases:
+        - Luce camera uno
+    light.hue_color_lamp_2:
+      room: camera da letto
+      name: luce camera 2
+      expose: true
+      aliases:
+        - Luce camera due
+    light.hue_color_lamp_3:
+      room: camera da letto
+      name: luce camera 3
+      expose: true
+      aliases:
+        - Luce camera tre
+    light.hue_lightstrip_plus_1:
+      room: camera da letto
+      name: luce camera strip
+      expose: true
+      aliases:
+        - Luce camera striscia
+        - luce camera striscia led
+    light.xiaomi_philips_camera:
+      room: camera da letto
+      name: luce camera romina
+      expose: true
+      aliases:
+        - Luce camera culla
+        - luce camera comodino
+    light.yeelight_luce_bedside:
+      room: camera da letto
+      name: luce camera gianpi
+      expose: true
+      aliases:
+        - Luce bedside
+        - luce bedside comodino
+    light.gateway_light_f0b429b45c97:
+      room: entrata
+      name: luce gateway ingresso
+      expose: true
+      aliases:
+        - Luce gateway entrata 
+    light.yeelight_luce_ingresso:
+      room: entrata
+      name: luce ingresso
+      expose: true
+      aliases:
+        - Luce in Ingresso
+        - luce entrata
+    light.yeelight_luce_studio:
+      room: studio
+      name: luce studio
+      expose: true
+      aliases:
+        - Luce nello Studio
+        - luce camera ospiti
+    switch.piantana_sala:
+      room: salotto
+      name: piantana sala
+      expose: true
+      aliases:
+        - Luce Sala
+        - luce salotto
+        - piantana salotto
+    switch.tv_lg:
+      room: salotto
+      name: TV LG
+      expose: true
+      aliases:
+        - TV sala
+        - TV salotto
+    switch.tv_lg_input:
+      room: salotto
+      name: Input TV LG
+      expose: true
+      aliases:
+        - Input TV Sala
+        - Input TV salotto
+    switch.tv_lg_canali:
+      room: salotto
+      name: Canale TV LG
+      expose: true
+      aliases:
+        - Canale TV Sala
+        - canale TV salotto
+    switch.tv_lg_volume:
+      room: salotto
+      name: Volume TV LG
+      expose: true
+      aliases:
+        - Volume TV Sala
+        - volume TV salotto
+    switch.tv_lg_mute:
+      room: salotto
+      name: Muto TV LG
+      expose: true
+      aliases:
+        - Muto TV Sala
+        - muto TV salotto
+    switch.orviboplug1:
+      room: salotto
+      name: Presa Orvibo
+      expose: true
+      aliases:
+        - Presa Sala
+        - presa salotto
+    climate.daikin_fx_sala:
+      room: salotto
+      name: Condizionatore sala
+      expose: true
+      aliases:
+        - Split Sala
+        - split salotto
+    climate.netatmo1:
+      room: entrata
+      name: Termostato
+      expose: true
+      aliases:
+        - Termostato Ingresso
+        - termostato caldaia
+        - riscaldamento
+    climate.valvola_salotto1:
+      room: salotto
+      name: Valvola Salotto 1
+      expose: true
+      aliases:
+        - Valvola Sala 1
+    climate.valvola_studio:
+      room: studio
+      name: Valvola Studio
+      expose: true
+      aliases:
+        - Valvola Studio
+   
+#################################################################
+#                                                               #
+#                          Automation                           #
+#                                                               #
+#################################################################
+automation:
+  - alias: Set GA Volume To Low At Night
+    trigger:
+      platform: time
+      hours: 21
+      minutes: 1
+      seconds: 0
+    action:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.salotto
+        volume_level: 0.20
+    - service: notify.telegram
+      data_template:
+        title: "-- Google Home --"
+        message: 'Volume Google Home 20%'
+
+  - alias: Set GA Volume To High Daytime
+    trigger:
+      platform: time
+      hours: 9
+      minutes: 1
+      seconds: 0
+    action:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.salotto
+        volume_level: 0.4
+    - service: notify.telegram
+      data_template:
+        title: "-- Google Home --"
+        message: 'Volume Google Home 40%'

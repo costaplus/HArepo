@@ -1,0 +1,37 @@
+#########################################################
+#                                                       #
+#               PULSANTE INGRESSO XIAOMI                #
+#                                                       #
+#########################################################
+
+  - alias: 'xxxxxxxxxxxxxxxxxxxxxx'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.door_window_sensor_158d00011854f0
+        from: 'Closed'
+        to: 'Open'
+    condition:
+      condition: state
+      entity_id: light.yeelight_luce_ingresso
+      state: 'on'
+    action:
+      - service: light.turn_on
+        data:
+          entity_id:
+            - light.gateway_light_f0b429b45c97
+            - light.yeelight_luce_ingresso
+          brightness: 254
+      - wait_template: "{{ is_state(trigger.entity_id, 'Closed') }}"
+      - service: light.turn_on
+        data:
+          entity_id:
+            - light.gateway_light_f0b429b45c97
+            - light.yeelight_luce_ingresso
+          brightness_pct: 10
+
+#########################################################
+#                                                       #
+#            END OF CONFIGURATION FILE                  #
+#                                                       #
+#########################################################

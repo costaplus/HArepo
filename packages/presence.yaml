@@ -1,0 +1,352 @@
+#################################################################
+#                                                               #
+#                       Packages/Presence                       #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'presence'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## Sensor
+    ################################################
+    
+    sensor.commute_to_work:
+      <<: *customize
+      icon: 'mdi:car'
+      friendly_name: Andare a lavoro
+
+    sensor.commute_from_work:
+      <<: *customize
+      icon: 'mdi:home-variant'
+      friendly_name: Tornare da lavoro
+
+    sensor.gianpi_to_home:
+      <<: *customize
+      icon: 'mdi:home-variant'
+
+    sensor.tragitto_casa_lavoro:
+      <<: *customize
+      friendly_name: Tempo Casa-Lavoro
+
+    sensor.tragitto_lavoro_casa:
+      <<: *customize
+      friendly_name: Tempo Lavoro-Casa
+ 
+#################################################################
+#                                                               #
+#                           Group                               #
+#                                                               #
+################################################################# 
+      
+group:
+  people:
+    name: People
+    view: no
+    entities:
+      - sensor.gianpi
+      - sensor.xiaomi_mi5_battery
+      - sensor.romi
+      - sensor.huawei_p9_battery
+      - sensor.tragitto_casa_lavoro
+      - sensor.tragitto_lavoro_casa
+      - sensor.gianpi_to_home
+      
+  family:
+    name: Family
+    view: no
+    entities:
+      - sensor.gianpi
+      - sensor.romi
+  
+  gianpi_track:
+    name: Gianpi
+    view: no
+    entities:
+      - device_tracker.gianpi_mi5_blue
+      - device_tracker.gianpi_phone
+      - device_tracker.gianpi_xiaomimi5
+
+  romi_track:
+    name: Romi
+    view: no
+    entities:
+      - device_tracker.romi_p9_blue
+      - device_tracker.romi_phone
+      - device_tracker.romi_huaweip9
+
+#################################################################
+#                                                               #
+#                      Device Trackers                          #
+#                                                               #
+################################################################# 
+
+device_tracker:
+  - platform: ping
+    count: 3
+    hosts:
+      gianpi_phone: 192.168.1.179
+      romi_phone: 192.168.1.178
+#    track_new_devices: true
+ 
+  - platform: gpslogger
+#    track_new_devices: true
+  
+  - platform: bluetooth_tracker
+    request_rssi: true
+#    track_new_devices: true
+
+#################################################################
+#                                                               #
+#                          Sensors                              #
+#                                                               #
+################################################################# 
+
+## Batteries
+sensor:
+# owntrack battery
+ 
+  - platform: template
+    sensors:
+      xiaomi_mi5_battery:
+        friendly_name: Xiaomi MI5 di Gianpi
+        unit_of_measurement: "%"
+        value_template: >-
+          {% if states.device_tracker.gianpi_xiaomimi5.attributes.battery %}
+          {{ states.device_tracker.gianpi_xiaomimi5.attributes.battery | int}}
+          {% endif %}
+        device_class: battery
+
+  - platform: template
+    sensors:
+      huawei_p9_battery:
+        friendly_name: Huawei P9 di Romi
+        unit_of_measurement: "%"
+        value_template: >-
+          {% if states.device_tracker.romi_huaweip9.attributes.battery %}
+          {{ states.device_tracker.romi_huaweip9.attributes.battery | int}}
+          {% endif %}
+        device_class: battery        
+
+#and ((as_timestamp(now()) - as_timestamp(states.device_tracker.gianpi_xiaomimi5.last_updated))|round(0) <1200))
+## Create Sensor for Display in UI      
+  - platform: template
+    sensors:
+      gianpi:
+        friendly_name: "Gianpi"
+        value_template: >-
+          {% if is_state('group.gianpi_track', 'home') %}
+            Casa 
+          {% elif is_state('device_tracker.gianpi_xiaomimi5', 'Office Siena') %}
+            MPS Via Ricasoli Siena
+          {% elif is_state('device_tracker.gianpi_xiaomimi5', 'Office Firenze') %}
+            MPS Via Panciatichi Firenze
+          {% elif is_state('device_tracker.gianpi_xiaomimi5', 'Ospedale Siena') %}
+            Coop Siena Le Grondaie
+          {% elif is_state('device_tracker.gianpi_xiaomimi5', 'Stazione FS Siena') %}
+            Stazione Ferroviaria Siena
+          {% elif is_state('device_tracker.gianpi_xiaomimi5', 'Piazza del Campo') %}
+            Piazza del Campo Siena
+          {% elif is_state('device_tracker.gianpi_xiaomimi5', 'Fortezza Siena') %}
+            Fortezza Medicea Siena
+          {% elif is_state('device_tracker.gianpi_xiaomimi5', 'Coop Siena') %}
+            Coop Siena
+          {% elif is_state('device_tracker.gianpi_xiaomimi5', 'Parents') %}
+            Casa Grosseto
+          {% else %}
+            Fuori
+          {% endif %}
+        entity_picture_template: >-
+          {% if is_state('sensor.gianpi', 'Casa') %}
+            /local/images/gianpi.jpg
+          {% endif %}
+        icon_template: >-
+          {% if is_state('device_tracker.gianpi_xiaomimi5', 'Gianpi Work') %}
+            mdi:briefcase
+          {% else %}
+            mdi:walk
+          {% endif %}
+
+      romi:
+        friendly_name: "Romi"
+        value_template: >-
+          {% if is_state('group.romi_track', 'home') %}
+            Casa
+          {% elif is_state('device_tracker.romi_huaweip9', 'School Siena') %}
+            Scuola
+          {% elif is_state('device_tracker.romi_huaweip9', 'Ospedale Siena') %}
+            Coop Siena Le Grondaie
+          {% elif is_state('device_tracker.romi_huaweip9', 'Stazione FS Siena') %}
+            Stazione Ferroviaria Siena
+          {% elif is_state('device_tracker.romi_huaweip9', 'Piazza del Campo') %}
+            Piazza del Campo Siena
+          {% elif is_state('device_tracker.romi_huaweip9', 'Fortezza Siena') %}
+            Fortezza Medicea Siena
+          {% elif is_state('device_tracker.romi_huaweip9', 'Coop Siena') %}
+            Coop Siena
+          {% else %}
+            Fuori
+          {% endif %}
+        entity_picture_template: >-
+          {% if is_state('sensor.romi', 'Casa') %}
+            /local/images/romina.jpg
+          {% endif %}
+        icon_template: >-
+          {% if is_state('device_tracker.romi_huaweip9', 'Romi Work') %}
+            mdi:school
+          {% else %}
+            mdi:walk
+          {% endif %}
+
+## Room Assistant Sensors
+## UI Sensor to show which location I am in the house
+## Waze Travel Time
+
+  - platform: waze_travel_time
+#  - platform: google_travel_time
+#    api_key: !secret google_maps
+    name: tragitto casa lavoro
+    origin: zone.home
+    destination: zone.gianpi_work
+    region: 'EU'
+    
+  - platform: waze_travel_time 
+#  - platform: google_travel_time
+#    api_key: !secret google_maps
+    name: tragitto lavoro casa
+    origin: zone.gianpi_work
+    destination: zone.home
+    region: 'EU'
+
+  - platform: waze_travel_time 
+#  - platform: google_travel_time
+#    api_key: !secret google_maps
+    name: Gianpi to Home
+    origin: device_tracker.gianpi_xiaomimi5
+    destination: zone.gianpi_work
+    region: 'EU'
+    
+#################################################################
+#                                                               #
+#                         Automations                           #
+#                                                               #
+#################################################################
+automation: 
+   
+## Romi Home Announcement 
+  - alias: Welcome Home Romina
+    trigger:
+      platform: state
+      entity_id: binary_sensor.door_window_sensor_158d00011854f0
+      to: 'on'
+    condition:
+      condition: or  
+      conditions:
+       - condition: state
+         entity_id: sensor.romi
+         state: 'Casa'
+       - condition: state
+         entity_id: device_tracker.romi_huaweip9
+         state: 'home'
+    action:
+    - delay: 00:00:40
+    - service: tts.google_say
+      data:
+        entity_id: media_player.salotto
+        message: "Ho sentito una perturbazione nella forza, oh oh benvenuta a casa Lord Romina."
+        
+## Gianpi Home Announcement
+  - alias: Welcome Home Gianpi
+    initial_state: true
+    hide_entity: true
+    trigger:
+      platform: state
+      entity_id: binary_sensor.door_window_sensor_158d00011854f0
+      to: 'on'
+    condition:
+      condition: or  
+      conditions:
+       - condition: state
+         entity_id: sensor.gianpi
+         state: 'Casa'
+       - condition: state
+         entity_id: device_tracker.gianpi_xiaomimi5
+         state: 'home'
+    action:
+    - delay: 00:0:30
+    - service: tts.google_say
+      data:
+        entity_id: media_player.salotto
+        message: "Benvenuto Gianpi, il tuo arrivo ha creato una perturbazione nella forza."
+#    - service: notify.telegram
+#      data:
+#        title: ' -- ATTENZIONE --'
+#        message: 'Gianpi arriva a casa' 
+        
+## Gianpi at work announcement
+  - alias: Dad at Work
+    trigger:
+    - platform: zone
+      entity_id: device_tracker.gianpi_xiaomimi5
+      event: enter
+      zone: zone.gianpi_work
+    action:
+    - service: tts.google_say
+      data:
+        entity_id: media_player.salotto
+        message: "Papà è arrivato a lavoro."
+        
+## Gianpi left work announcement
+  - alias: Daddy Leaving Work Siena Notify
+    trigger:
+    - platform: zone
+      entity_id: device_tracker.gianpi_xiaomimi5
+      event: leave
+      zone: zone.gianpi_work
+    condition:
+    -  condition: time
+       after: '15:00'
+    action:
+    - service: tts.google_say
+      data:
+        entity_id: media_player.salotto
+        message: "Gianpi ha lasciato il Consorzio di Siena, con traffico normale arriverà tra circa 6 minuti."
+        
+## Gianpi left work announcement
+  - alias: Daddy Leaving Work Firenze Notify
+    trigger:
+    - platform: zone
+      entity_id: device_tracker.gianpi_xiaomimi5
+      event: leave
+      zone: zone.gianpi_work_firenze
+    condition:
+    - condition: time
+      after: '15:00'
+    action:
+    - service: tts.google_say
+      data:
+        entity_id: media_player.salotto
+        message: "Gianpi ha lasciato il Consorzio di Firenze, con traffico normale arriverà tra circa 1 ora."
+
+#################################################################
+#                                                               #
+#                             END                               #
+#                                                               #
+#################################################################

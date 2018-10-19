@@ -1,0 +1,326 @@
+﻿#################################################################
+##                      News package
+#################################################################
+# Inserire dentro al file secret.yaml
+# l'id dell'utente dove si vuole vengano notificate le news
+# es: telegram_news: 2819381391
+#
+# Per visualizzare le notizie sull'interfaccia Home Assistant
+# inserire in una scheda Lovelace:
+#     # News
+#      - type: entities
+#        title: News
+#        entities:
+#          - sensor.news1
+#          - sensor.news2
+#          - sensor.news3
+#          - sensor.news4
+#          - sensor.news5
+#          - sensor.news6
+#          - sensor.news7
+#          - sensor.news8
+#          - sensor.news9
+#          - sensor.news10
+#
+# Per attivare le notifiche impostare a ON
+# input_boolean.news_notifica_telegram
+#
+#################################################################
+##                   Canali per le notizie                      #
+#################################################################
+feedreader:
+  urls:
+    #- http://lorem-rss.herokuapp.com/feed?unit=second&interval=30
+    #- http://feeds.feedburner.com/SkyitTg24
+    #- https://tg24.sky.it/rss/tg24_politica.xml
+    #- https://tg24.sky.it/rss/tg24_economia.xml
+    #- https://tg24.sky.it/rss/tg24_mondo.xml
+    #- https://tg24.sky.it/rss/tg24_tecnologia.xml
+    #- https://tg24.sky.it/rss/tg24_cronaca.xml
+    #- https://www.ansa.it/toscana/notizie/toscana_rss.xml
+    #- https://www.ansa.it/sito/ansait_rss.xml
+    - https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml
+    - https://www.ansa.it/sito/notizie/tecnologia/tecnologia_rss.xml
+    #- https://www.ansa.it/sito/notizie/politica/politica_rss.xml
+    # - http://rss.cnn.com/rss/cnn_topstories.rss
+    
+  scan_interval:
+    minutes: 5
+  max_entries: 10
+
+  
+#################################################################
+##                      Input number
+#################################################################
+    
+#################################################################
+##                      Input Boolean
+#################################################################
+input_boolean:
+  news_notifica_telegram:
+    name: Notifica Telegram notizie
+    icon: mdi:telegram
+
+
+#################################################################
+##                      Input Text
+#################################################################
+input_text:
+  news1:
+    name: News 1
+    max: 300
+  time_news1:
+    name: Time News 1
+  news2:
+    name: News 2
+    max: 300
+  time_news2:
+    name: Time News 2
+  news3:
+    name: News 3
+    max: 300
+  time_news3:
+    name: Time News 3
+  news4:
+    name: News 4
+    max: 300
+  time_news4:
+    name: Time News 4
+  news5:
+    name: News 5
+    max: 300
+  time_news5:
+    name: Time News 5
+  news6:
+    name: News 6
+    max: 300
+  time_news6:
+    name: Time News 6
+  news7:
+    name: News 7
+    max: 300
+  time_news7:
+    name: Time News 7
+  news8:
+    name: News 8
+    max: 300
+  time_news8:
+    name: Time News 8
+  news9:
+    name: News 9
+    max: 300
+  time_news9:
+    name: Time News 9
+  news10:
+    name: News 10
+    max: 300
+  time_news10:
+    name: Time News 10
+
+#################################################################
+##                      Binary sensor
+#################################################################
+    
+#################################################################
+##                      Sensors
+#################################################################
+sensor:
+  - platform: template
+    sensors:
+      news1:
+        icon_template: mdi:lead-pencil
+        friendly_name_template: >-
+          {{ states.input_text.time_news1.state }}
+        value_template: '{{ states.input_text.news1.state }}'
+      news2:
+        icon_template: mdi:lead-pencil
+        friendly_name_template: >-
+          {{ states.input_text.time_news2.state }}
+        value_template: '{{ states.input_text.news2.state }}'
+      news3:
+        icon_template: mdi:lead-pencil
+        friendly_name_template: >-
+          {{ states.input_text.time_news3.state }}
+        value_template: '{{ states.input_text.news3.state }}'
+      news4:
+        icon_template: mdi:lead-pencil
+        friendly_name_template: >-
+          {{ states.input_text.time_news4.state }}
+        value_template: '{{ states.input_text.news4.state }}'
+      news5:
+        icon_template: mdi:lead-pencil
+        friendly_name_template: >-
+          {{ states.input_text.time_news5.state }}
+        value_template: '{{ states.input_text.news5.state }}'
+      news6:
+        icon_template: mdi:lead-pencil
+        friendly_name_template: >-
+          {{ states.input_text.time_news6.state }}
+        value_template: '{{ states.input_text.news6.state }}'
+      news7:
+        icon_template: mdi:lead-pencil
+        friendly_name_template: >-
+          {{ states.input_text.time_news7.state }}
+        value_template: '{{ states.input_text.news7.state }}'
+      news8:
+        icon_template: mdi:lead-pencil
+        friendly_name_template: >-
+          {{ states.input_text.time_news8.state }}
+        value_template: '{{ states.input_text.news8.state }}'
+      news9:
+        icon_template: mdi:lead-pencil
+        friendly_name_template: >-
+          {{ states.input_text.time_news9.state }}
+        value_template: '{{ states.input_text.news9.state }}'
+      news10:
+        icon_template: mdi:lead-pencil
+        friendly_name_template: >-
+          {{ states.input_text.time_news10.state }}
+        value_template: '{{ states.input_text.news10.state }}'
+
+
+#################################################################
+##                       Groups
+#################################################################
+
+
+#################################################################
+##                      Automazioni
+#################################################################
+automation:          
+    # Notifiche telegram con notizie da RSS
+  - alias: News da RSS su telegram
+    trigger:
+      platform: event
+      event_type: feedreader
+    condition:
+      # Se non è già uscita la stessa notizia (Anti ripetizione)
+      - condition: template
+        value_template: "{{ trigger.event.data.title|replace('&quot;','')  != states.input_text.news1.state }}"
+      - condition: template
+        value_template: "{{ trigger.event.data.title|replace('&quot;','')  != states.input_text.news2.state }}"
+      - condition: template
+        value_template: "{{ trigger.event.data.title|replace('&quot;','')  != states.input_text.news3.state }}"
+      - condition: template
+        value_template: "{{ trigger.event.data.title|replace('&quot;','')  != states.input_text.news4.state }}"
+      - condition: template
+        value_template: "{{ trigger.event.data.title|replace('&quot;','')  != states.input_text.news5.state }}"
+    action:
+      # News sulla UI
+      - service: script.shift_news_sensori
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.news1
+          value: "{{ trigger.event.data.title |replace('&quot;','') }}"
+          #value: "{{ trigger.event.data.title |replace('&quot;','') |replace('<table border="0" cellspacing="0" cellpadding="0">','') |replace('<tr>','') |replace('<td>','') |replace('<a href=','') }}"
+      # Timestamp
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.time_news1
+          value: "{{ as_timestamp(now()) | timestamp_custom('%H:%M', true) }}"
+          
+      # Notifica Telegram con la notizia
+      - condition: state
+        entity_id: input_boolean.news_notifica_telegram
+        state: 'on'
+      - service: notify.telegram
+        data_template:
+          #target: !secret telegram_news
+          title: '--- NEWS ---'
+          message: "{{ trigger.event.data.title |replace('&quot;','') }}" 
+          # {{ trigger.event.data.summary.split('normal;margin:0pt;padding:0pt;')[0] }}"
+
+  
+        
+#################################################################
+##                      Script
+#################################################################
+script:
+  shift_news_sensori:
+    alias: "Shift dati delle news"
+    sequence:
+      # Shift notizie in memoria
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.news10
+          value: "{{ states.input_text.news9.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.news9
+          value: "{{ states.input_text.news8.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.news8
+          value: "{{ states.input_text.news7.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.news7
+          value: "{{ states.input_text.news6.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.news6
+          value: "{{ states.input_text.news5.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.news5
+          value: "{{ states.input_text.news4.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.news4
+          value: "{{ states.input_text.news3.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.news3
+          value: "{{ states.input_text.news2.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.news2
+          value: "{{ states.input_text.news1.state }}"
+      # Shift timestamp in memoria
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.time_news10
+          value: "{{ states.input_text.time_news9.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.time_news9
+          value: "{{ states.input_text.time_news8.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.time_news8
+          value: "{{ states.input_text.time_news7.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.time_news7
+          value: "{{ states.input_text.time_news6.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.time_news6
+          value: "{{ states.input_text.time_news5.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.time_news5
+          value: "{{ states.input_text.time_news4.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.time_news4
+          value: "{{ states.input_text.time_news3.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.time_news3
+          value: "{{ states.input_text.time_news2.state }}"
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.time_news2
+          value: "{{ states.input_text.time_news1.state }}"
+      
+
+#################################################################
+##                      Comandi shell Linux
+#################################################################
+
+####################################################
+#                                                  #
+#            END OF CONFIGURATION FILE             #
+#                                                  #
+####################################################

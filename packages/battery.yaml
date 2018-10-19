@@ -1,0 +1,283 @@
+#################################################################
+##                      Battery
+#################################################################
+homeassistant:
+  customize:
+    # Node Anchors
+    package.node_anchors:
+      customize: &customize
+        package: 'battery_alert'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    # Group
+    group.battery_alert:
+      <<: *customize
+      friendly_name: "Battery Alert"
+      icon: mdi:steam
+
+    # Automation
+    automation.battery_alert:
+      <<: *customize
+      friendly_name: "Battery Alert"
+        
+#################################################################
+##                      Input number
+#################################################################
+input_number:
+  soglia_minima_batterie:
+    name: Soglia minima batteria
+    min: 5
+    max: 50
+    step: 5
+
+#################################################################
+##                      Sensors
+#################################################################
+sensor:
+## Batterie termometri
+  - platform: template
+    sensors:
+      bat_temperatura_ingresso:
+        friendly_name: "Termometro Ingresso"
+        unit_of_measurement: '%'
+        value_template: '{{ states.sensor.temperature_158d0001d6be78.attributes.battery_level }}'
+        icon_template: mdi:battery
+
+## Batterie sensori porta
+  - platform: template
+    sensors:
+      bat_porta_ingresso:
+        friendly_name: "Sensore porta Ingresso"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.door_window_sensor_158d000112aec3.attributes.battery_level }}'
+        icon_template: mdi:battery
+
+  - platform: template
+    sensors:
+      bat_porta_studio:
+        friendly_name: "Sensore porta Studio"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.door_window_sensor_158d000112aec3.attributes.battery_level }}'
+        icon_template: mdi:battery
+
+  - platform: template
+    sensors:
+      bat_porta_sala1:
+        friendly_name: "Sensore porta Sala1"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.door_window_sensor_158d00011c3087.attributes.battery_level }}'
+        icon_template: mdi:battery
+        
+  - platform: template
+    sensors:
+      bat_porta_sala2:
+        friendly_name: "Sensore porta Sala2"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.door_window_sensor_158d00013e425d.attributes.battery_level }}'
+        icon_template: mdi:battery
+
+## Batterie sensori finestra
+  - platform: template
+    sensors:
+      bat_finestra_bagno:
+        friendly_name: "Sensore finestra Bagno"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.door_window_sensor_158d0002425ae8.attributes.battery_level }}'
+        icon_template: mdi:battery
+
+  - platform: template
+    sensors:
+      bat_finestra_livia:
+        friendly_name: "Sensore finestra Camera Livia"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.door_window_sensor_158d0002329f47.attributes.battery_level }}'
+        icon_template: mdi:battery
+
+  - platform: template
+    sensors:
+      bat_finestra_camera:
+        friendly_name: "Sensore finestra Camera Matrimoniale"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.door_window_sensor_158d000232ac82.attributes.battery_level }}'
+        icon_template: mdi:battery
+
+## Batterie sensori movimento
+  - platform: template
+    sensors:
+      bat_passaggio_sala:
+        friendly_name: "Sensore movimento Sala"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.motion_sensor_158d00010e4ea5.attributes.battery_level }}'
+        icon_template: mdi:battery
+
+  - platform: template
+    sensors:
+      bat_passaggio_camera:
+        friendly_name: "Sensore movimento Camera"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.motion_sensor_158d00013f7817.attributes.battery_level }}'
+        icon_template: mdi:battery
+
+  - platform: template
+    sensors:
+      bat_passaggio_ingresso:
+        friendly_name: "Sensore movimento Ingresso"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.motion_sensor_158d000223684f.attributes.battery_level }}'
+        icon_template: mdi:battery
+        
+## Batterie tasti
+  - platform: template
+    sensors:
+      bat_tasto_ingresso:
+        friendly_name: "Tasto ingresso"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.switch_158d00013ecf04.attributes.battery_level }}'
+        icon_template: mdi:battery
+        
+  - platform: template
+    sensors:
+      bat_tasto_sala:
+        friendly_name: "Tasto sala"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.switch_158d0002016342.attributes.battery_level }}'
+        icon_template: mdi:battery
+  - platform: template
+    sensors:
+      bat_tasto_camera:
+        friendly_name: "Tasto camera"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.switch_158d000202fd3f.attributes.battery_level }}'
+        icon_template: mdi:battery
+  
+    # Batterie smoke sensor
+  - platform: template
+    sensors:
+      bat_smoke_sensor:
+        friendly_name: "Smoke Sensor"
+        unit_of_measurement: '%'
+        value_template: '{{ states.binary_sensor.smoke_sensor_158d0001bb7dda.attributes.battery_level }}'
+        icon_template: mdi:battery
+
+
+#################################################################
+##                      Groups                                 ##
+#################################################################
+group:
+  # Scheda batterie sensori xiaomi
+  xiaomi_battery:
+    name: Batterie Sensori Xiaomi
+    view: no
+    control: hidden
+    entities:
+    - sensor.bat_temperatura_ingresso
+    - sensor.bat_porta_ingresso
+    - sensor.bat_porta_studio
+    - sensor.bat_porta_sala1
+    - sensor.bat_porta_sala2
+    - sensor.bat_passaggio_sala
+    - sensor.bat_passaggio_camera
+    - sensor.bat_passaggio_ingresso
+    - sensor.bat_tasto_sala
+    - sensor.bat_tasto_camera
+    - sensor.bat_tasto_ingresso
+    - sensor.bat_smoke_sensor
+    - sensor.orchidea_battery
+    - sensor.sansevieria_battery
+    - sensor.xiaomi_mi5_battery
+    - input_number.soglia_minima_batterie
+
+  mysensors_battery:
+    name: Batterie Sensori Mysensors
+    view: no
+    control: hidden
+    entities:
+    - sensor.jmp_bedroom_13_13_7
+    - sensor.jmp_weather_14_14_7
+    - sensor.jmp_weather_16_16_7
+    - sensor.jmp_livia_21_21_7
+    - sensor.jmp_studio_22_22_7
+  
+#################################################################
+##                      Automazioni
+#################################################################
+# Notifica in caso di batteria troppo bassa
+automation:
+- alias: Allarme batteria
+  initial_state: true
+  trigger:
+    - platform: time
+      at: '20:30:00'
+    - platform: time
+      at: '8:30:00'
+  condition:
+    - condition: template
+      value_template: >
+          {% macro battery_level() %}
+          {%- set threshold = states.input_number.soglia_minima_batterie.state | int -%}
+          {% set domains = ['light', 'switch', 'sensor', 'binary_sensor', 'zwave', 'lock'] %}
+          {% for domain in domains -%}
+          {% for item in states[domain] if ((item.attributes.battery_level is defined and item.attributes['battery_level'] | int < threshold) or ("battery" in item.name | lower and ((item.state | int < threshold and item.state|int != 0) or item.state | lower == "low" or item.state | lower == "unknown"))) -%}
+          {% if not "gas" in item.name | lower -%}
+          {% if (item.attributes.battery_level is defined and item.attributes['battery_level'] | int < threshold) -%}
+          {{ item.name }} ({{ item.attributes['battery_level'] }}){%- if not loop.last %}, {% endif -%}{% endif -%}
+          {% if "battery" in item.name | lower and ((item.state | int < threshold and item.state|int != 0) or item.state | lower == "low" or item.state | lower == "unknown") -%}
+          {{ item.name }} ({{ item.state }}){% if not loop.last %}, {%- endif %} {% endif -%}
+          {% endif -%}
+          {% endfor %}
+          {%- endfor %}
+          {% endmacro %}
+          {{ battery_level() | trim != "" }}
+  action:
+    - service: persistent_notification.create
+      data_template:
+        title: Attenzione! Batterie sotto la soglia impostata
+        notification_id: low-battery-alert
+        message: >
+          {% macro battery_level() %}
+          {%- set threshold = states.input_number.soglia_minima_batterie.state | int -%}
+          {% set domains = ['light', 'switch', 'sensor', 'binary_sensor', 'zwave', 'lock'] %}
+          {% for domain in domains -%}
+          {% for item in states[domain] if ((item.attributes.battery_level is defined and item.attributes['battery_level'] | int < threshold) or ("battery" in item.name | lower and ((item.state | int < threshold and item.state|int != 0) or item.state | lower == "low" or item.state | lower == "unknown"))) -%}
+          {% if not "gas" in item.name | lower -%}
+          {% if (item.attributes.battery_level is defined and item.attributes['battery_level'] | int < threshold) -%}
+          {{ item.name }} ({{ item.attributes['battery_level'] }}){%- if not loop.last %}, {% endif -%}{% endif -%}
+          {% if "battery" in item.name | lower and ((item.state | int < threshold and item.state|int != 0) or item.state | lower == "low" or item.state | lower == "unknown") -%}
+          {{ item.name }} ({{ item.state }}){% if not loop.last %}, {%- endif %} {% endif -%}
+          {% endif -%}
+          {% endfor %}
+          {%- endfor %}
+          {% endmacro %}
+          {{ battery_level() }}
+    - service: notify.telegram
+      data_template:
+        title: "Attenzione! Batterie sotto la soglia impostata"
+        message: >
+          {% macro battery_level() %}
+          {%- set threshold = states.input_number.soglia_minima_batterie.state | int -%}
+          {% set domains = ['light', 'switch', 'sensor', 'binary_sensor', 'zwave', 'lock'] %}
+          {% for domain in domains -%}
+          {% for item in states[domain] if ((item.attributes.battery_level is defined and item.attributes['battery_level'] | int < threshold) or ("battery" in item.name | lower and ((item.state | int < threshold and item.state|int != 0) or item.state | lower == "low" or item.state | lower == "unknown"))) -%}
+          {% if not "gas" in item.name | lower -%}
+          {% if (item.attributes.battery_level is defined and item.attributes['battery_level'] | int < threshold) -%}
+          {{ item.name }} ({{ item.attributes['battery_level'] }}){%- if not loop.last %}, {% endif -%}{% endif -%}
+          {% if "battery" in item.name | lower and ((item.state | int < threshold and item.state|int != 0) or item.state | lower == "low" or item.state | lower == "unknown") -%}
+          {{ item.name }} ({{ item.state }}){% if not loop.last %}, {%- endif %} {% endif -%}
+          {% endif -%}
+          {% endfor %}
+          {%- endfor %}
+          {% endmacro %}
+          {{ battery_level() }}
+        target:
+          - !secret telegram_chatid
+           
+#################################################################
+##                      Script
+#################################################################
+#{% set domains = ['light', 'switch', 'sensor', 'binary_sensor', 'zwave', 'lock'] %}
+
+
