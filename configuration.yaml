@@ -45,7 +45,7 @@ map:
 
 #cloud:
 #updater:
-#discovery:
+discovery:
 #conversation:
 
 ###############################################

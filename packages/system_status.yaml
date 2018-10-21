@@ -83,6 +83,7 @@ group:
       - binary_sensor.ping__netatmo_relay
       - binary_sensor.ping__dafang1_cam
       - binary_sensor.ping__dafang2_cam
+      - binary_sensor.ping__pi_zero
  
   media devices:
     name: Media Devices
@@ -284,6 +285,9 @@ binary_sensor:
   - platform: ping
     host: 192.168.1.150
     name: PING - Dafang2 Cam
+  - platform: ping
+    host: 192.168.1.111
+    name: PING - Pi Zero
           
 #################################################################
 #                                                               #
@@ -312,11 +316,11 @@ automation:
     trigger:
       platform: numeric_state
       entity_id: sensor.processor_use
-      above: 30
+      above: 40
     action:
       - service: notify.telegram
         data:
-          message: 'Warning - HA Server Processor above 30%'
+          message: 'Warning - HA Server Processor above 40%'
           
 ## Notify if CPU Temperature is High
   - alias: CPU Temp Alarm
@@ -360,6 +364,7 @@ automation:
           - binary_sensor.ping__netatmo_relay
           - binary_sensor.ping__dafang1_cam
           - binary_sensor.ping__dafang2_cam
+          - binary_sensor.ping__pi_zero
         to: 'off'
     action:
       - service: notify.telegram

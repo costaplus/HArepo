@@ -242,8 +242,8 @@ views:
           image: /local/images/bedroom.jpeg
         - type: entities
           entities:
+          - binary_sensor.door_window_sensor_158d000232ac82
           - binary_sensor.motion_sensor_158d00010e4ea5
-          - binary_sensor.door_window_sensor_158d0002329f47
           - sensor.jmp_bedroom_13_13_1
           - sensor.jmp_bedroom_13_13_2
           - sensor.jmp_bedroom_13_13_3
@@ -253,7 +253,7 @@ views:
         cards:
         - type: picture-entity
           title: Studio
-          entity: light.yeelight_luce_studio
+          entity: group.studio_lights
           tap_action: toggle
           image: /local/images/workroom.jpeg
         - type: entities
@@ -261,6 +261,7 @@ views:
           - binary_sensor.door_window_sensor_158d000112aec3
           - sensor.jmp_studio_22_22_1
           - sensor.jmp_studio_22_22_2
+          - binary_sensor.0x00158d00023372ec
           
 ### INGRESSO
       - type: vertical-stack
@@ -287,8 +288,7 @@ views:
           image: /local/images/bedroom-child.jpeg
         - type: entities
           entities:
-          - binary_sensor.motion_sensor_158d00013f7817
-          - binary_sensor.door_window_sensor_158d000232ac82
+          - binary_sensor.door_window_sensor_158d0002329f47
           - sensor.jmp_livia_21_21_1
           - sensor.jmp_livia_21_21_2 
 
@@ -297,13 +297,14 @@ views:
         cards:
         - type: picture-entity
           title: Sala
-          entity: group.living_room_lights
+          entity: switch.luce_sala
           tap_action: toggle
           image: /local/images/livingroom.jpeg
         - type: entities
           entities:
           - binary_sensor.door_window_sensor_158d00011c3087
           - binary_sensor.door_window_sensor_158d00013e425d
+          - binary_sensor.motion_sensor_158d00013f7817
           - sensor.orchidea_temperature
           - sensor.sansevieria_temperature
 
@@ -353,12 +354,6 @@ views:
             left: 25%
         - type: state-icon
           tap_action: toggle
-          entity: light.xiaomi_philips_camera
-          style:
-            top: 18%
-            left: 35%
-        - type: state-icon
-          tap_action: toggle
           entity: light.hue_color_lamp_1
           style:
             top: 28%
@@ -400,7 +395,7 @@ views:
 ### SALA
         - type: state-icon
           tap_action: toggle
-          entity: switch.piantana_sala
+          entity: switch.luce_sala
           style:
             top: 24%
             left: 56%
@@ -421,6 +416,12 @@ views:
           style:
             top: 77%
             left: 68%
+        - type: state-icon
+          tap_action: toggle
+          entity: group.piantana_lights
+          style:
+            top: 77%
+            left: 72%
         - type: state-label
           entity: sensor.jmp_studio_22_22_1
           style:
@@ -542,6 +543,7 @@ views:
           - binary_sensor.ping__netatmo_relay
           - binary_sensor.ping__dafang1_cam
           - binary_sensor.ping__dafang2_cam
+          - binary_sensor.ping__pi_zero
         - type: entities
           title: Network Device 
           entities:
@@ -599,6 +601,7 @@ views:
           - sensor.orchidea_battery
           - sensor.sansevieria_battery
           - sensor.bat_cubo_studio
+          - sensor.bat_water_studio
           - input_number.soglia_minima_batterie
       - type: entities
         title: Batterie Smartphone
@@ -644,7 +647,6 @@ views:
           title: Luci Camera
           entities:
           - light.yeelight_luce_bedside
-          - light.xiaomi_philips_camera
           - light.hue_color_lamp_1
           - light.hue_color_lamp_2
           - light.hue_color_lamp_3
@@ -664,13 +666,15 @@ views:
           title: Luci Sala
           show_header_toggle: false
           entities:
-          - switch.piantana_sala
+          - switch.luce_sala
         
         - type: entities
           title: Luci Studio
           show_header_toggle: false
           entities:
           - light.yeelight_luce_studio
+          - light.xiaomi_philips_studio_1
+          - light.xiaomi_philips_studio_2
         
         - type: entities
           title: Luci Ingresso
@@ -709,7 +713,9 @@ views:
         - entity: binary_sensor.switch_158d000202fd3f
           secondary_info: last-changed
         - entity:  sensor.0x00158d000269e844
-          secondary_info: last-changed       
+          secondary_info: last-changed
+        - entity:  binary_sensor.0x00158d00023372ec
+          secondary_info: last-changed    
 
       - type: entities
         title: Sensori Porta

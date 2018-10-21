@@ -32,18 +32,28 @@ homeassistant:
     sensor.0x00158d000269e844:
       <<: *customize
       friendly_name: CUBO Studio
-
+    
     sensor.bat_cubo_studio:
       <<: *customize
       friendly_name: Cubo Studio
       icon: mdi:battery
       unit_of_measurement: "%"
 
-####################################################
-#                                                  #
-#                   SENSORS                        #
-#                                                  #
-####################################################
+    binary_sensor.0x00158d00023372ec:
+      <<: *customize
+      friendly_name: WATER Studio
+    
+    sensor.bat_water_studio:
+      <<: *customize
+      friendly_name: Water Studio
+      icon: mdi:battery
+      unit_of_measurement: "%"    
+
+#################################################################
+#                                                               #
+#                            Sensor                             #
+#                                                               #
+#################################################################
 sensor:
   - platform: template
     sensors:
@@ -51,12 +61,41 @@ sensor:
         unit_of_measurement: "%" 
         value_template: '{{ state_attr("sensor.0x00158d000269e844", "battery") | int }}'
 
+  - platform: template
+    sensors:
+      water_cubo_studio:
+        unit_of_measurement: "%" 
+        value_template: '{{ state_attr("binary_sensor.0x00158d00023372ec", "battery") | int }}'
+
+#################################################################
+#                                                               #
+#                          Automation                           #
+#                                                               #
+#################################################################
+automation:
+
+####################################################
+#                                                  #
+#               XIAOMI WATER LEAK                  #
+#                                                  #
+####################################################
+  - alias: segnalazione allagamento
+    trigger:
+      platform: mqtt
+      topic: 'zigbee2mqtt/0x00158d00023372ec'
+    condition:
+    - condition: template
+      value_template: "{{ 'true' == trigger.payload_json.water_leak }}"
+    action:
+    - service: notify.telegram
+      data_template:
+        title: '* ATTENZIONE ALLAGAMENTO *'
+        message: 'Controlla subito nello Studio'
 ####################################################
 #                                                  #
 #                  XIAOMI CUBE                     #
 #                                                  #
 ####################################################
-automation:
   - alias: aumenta luminosita luce ingresso con cubo
     trigger:
       platform: mqtt
@@ -102,7 +141,7 @@ automation:
       service: switch.toggle
       entity_id: switch.tv_lg
 ####################################################
-  - alias: accende spegne piantana sala con cubo
+  - alias: accende spegne luce sala con cubo
     trigger:
       platform: mqtt
       topic: 'zigbee2mqtt/0x00158d000269e844'
@@ -111,7 +150,7 @@ automation:
       value_template: "{{ 'tap' == trigger.payload_json.action }}"
     action:
       service: switch.toggle
-      entity_id: switch.piantana_sala
+      entity_id: switch.luce_sala
 ####################################################
   - alias: accende spegne luce studio con cubo
     trigger:
@@ -124,7 +163,7 @@ automation:
       service: light.toggle
       entity_id: light.yeelight_luce_studio
 ####################################################
-  - alias: accende spegne luce bedside con cubo
+  - alias: accende spegne piantana studio con cubo
     trigger:
       platform: mqtt
       topic: 'zigbee2mqtt/0x00158d000269e844'
@@ -133,7 +172,7 @@ automation:
       value_template: "{{ 'flip180' == trigger.payload_json.action }}"
     action:
       service: light.toggle
-      entity_id: light.yeelight_luce_bedside
+      entity_id: group.piantana_lights
 ####################################################
   - alias: accende spegne luce ingresso con cubo
     trigger:

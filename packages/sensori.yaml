@@ -83,7 +83,7 @@ homeassistant:
 
     binary_sensor.motion_sensor_158d00013f7817:
       <<: *customize
-      friendly_name: PIR Camera
+      friendly_name: PIR Living Room
 
     binary_sensor.motion_sensor_158d000223684f:
       <<: *customize

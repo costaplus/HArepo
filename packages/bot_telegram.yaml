@@ -48,13 +48,39 @@ automation:
         message: 'Your _Home Assistant_ has *started*.'
         data:
           inline_keyboard:
-            - 'Home:/Home, RpiTemp:/rpitemp, Pot:/potenza Temp:/temperature'
+          - 'Home:/home, RpiTemp:/rpitemp, Pot:/potenza, Temp:/temperature'
+          - 'Bed:/bedroom-temp, Cucina:/cucina-temp, Livia:/cameralivia-temp, Studio:/studio-temp'
         target: 
-          - !secret telegram_chatid
+        - !secret telegram_chatid
     - service: shell_command.log
       data_template:
         text: >
           - HA Start. WAN IP: '{{ states.sensor.external_ip.state }}'
+
+####################################################
+#                                                  #
+#                       HOME                       #
+#                                                  #
+####################################################
+  - alias: "Command home"
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_callback
+      event_data:
+        data: '/home'
+    action:
+    - service: notify.telegram
+      data:
+        title: '*HA HOME*'
+        message: 'Scegli i comandi'
+        data:
+          inline_keyboard:
+          - 'Home:/home, RpiTemp:/rpitemp, Pot:/potenza, Temp:/temperature'
+          - 'Bed:/bedroom-temp, Cucina:/cucina-temp, Livia:/cameralivia-temp, Studio:/studio-temp'
+        target: 
+        - !secret telegram_chatid
+
 ####################################################
 #                                                  #
 #                     CPU TEMP                     #
@@ -75,35 +101,13 @@ automation:
         message: '{{ states.sensor.cpu_temperature.state }} C '
         data:
           inline_keyboard:
-            - 'Home:/home'
+          - 'Home:/home'
         target: 
-          - !secret telegram_chatid
+        - !secret telegram_chatid
     - service: shell_command.log
       data_template:
         text: >
           - Rpi CPU Temp: '{{ states.sensor.cpu_temperature.state }} C'
-####################################################
-#                                                  #
-#                       HOME                       #
-#                                                  #
-####################################################
-  - alias: "Command home"
-    hide_entity: true
-    trigger:
-      platform: event
-      event_type: telegram_callback
-      event_data:
-        data: '/home'
-    action:
-    - service: notify.telegram
-      data:
-        title: '*HA HOME*'
-        message: 'Scegli i comandi'
-        data:
-          inline_keyboard:
-            - 'Home:/Home, RpiTemp:/rpitemp, Pot:/potenza Temp:/temperature'
-        target: 
-          - !secret telegram_chatid
 
 ####################################################
 #                                                  #
@@ -124,7 +128,7 @@ automation:
         message: 'Potenza istantanea: {{ states.sensor.jmp_energy_12_12_1.state }} Watt.'
         data:
           inline_keyboard:
-            - 'Home:/home'
+          - 'Home:/home'
         target: 
         - !secret telegram_chatid
 
@@ -158,7 +162,7 @@ automation:
           {{ temp_level() }}
         data:
           inline_keyboard:
-            - 'Home:/home'
+          - 'Home:/home'
         target:
         - !secret telegram_chatid
 
@@ -172,16 +176,19 @@ automation:
     hide_entity: true
     trigger:
       platform: event
-      event_type: telegram_command
+      event_type: telegram_callback
       event_data:
-        command: '/bedroom-temp'
+        data: '/bedroom-temp'
     action:
-      - service: notify.telegram
-        data_template:
-          title: 'Master Bedroom'
-          message: 'Ci sono {{states.sensor.jmp_bedroom_13_13_2.state}} C e {{states.sensor.jmp_bedroom_13_13_3.state}} % di umidità nella camera padronale'
-          target: 
-            - !secret telegram_chatid
+    - service: notify.telegram
+      data_template:
+        title: '*Master Bedroom*'
+        message: 'Ci sono {{states.sensor.jmp_bedroom_13_13_2.state}} C e {{states.sensor.jmp_bedroom_13_13_3.state}} % di umidità nella camera padronale'
+        data:
+          inline_keyboard:
+          - 'Home:/home'
+        target:
+        - !secret telegram_chatid
 
 ####################################################
 #                                                  #
@@ -193,16 +200,19 @@ automation:
     hide_entity: true
     trigger:
       platform: event
-      event_type: telegram_command
+      event_type: telegram_callback
       event_data:
-        command: '/cucina-temp'
+        data: '/cucina-temp'
     action:
-      - service: notify.telegram
-        data_template:
-          title: 'Cucina'
-          message: 'Ci sono {{states.sensor.thcucina_temp.state}} C e {{states.sensor.thcucina_hum.state}} % di umidità in cucina'
-          target: 
-            - !secret telegram_chatid
+    - service: notify.telegram
+      data_template:
+        title: '*Cucina*'
+        message: 'Ci sono {{states.sensor.thcucina_temp.state}} C e {{states.sensor.thcucina_hum.state}} % di umidità in cucina'
+        data:
+          inline_keyboard:
+          - 'Home:/home'
+        target: 
+        - !secret telegram_chatid
 
 ####################################################
 #                                                  #
@@ -214,16 +224,20 @@ automation:
     hide_entity: true
     trigger:
       platform: event
-      event_type: telegram_command
+      event_type: telegram_callback
       event_data:
-        command: '/cameralivia-temp'
+        data: '/cameralivia-temp'
     action:
-      - service: notify.telegram
-        data_template:
-          title: 'Camera Livia'
-          message: 'Ci sono {{states.sensor.jmp_livia_21_21_1.state}} C e {{states.sensor.jmp_livia_21_21_2.state}} % di umidità in camera di Livia'
-          target: 
-            - !secret telegram_chatid
+    - service: notify.telegram
+      data_template:
+        title: '*Camera Livia*'
+        message: 'Ci sono {{states.sensor.jmp_livia_21_21_1.state}} C e {{states.sensor.jmp_livia_21_21_2.state}} % di umidità in camera di Livia'
+        data:
+          inline_keyboard:
+          - 'Home:/home'
+        target: 
+        - !secret telegram_chatid
+
 ####################################################
 #                                                  #
 #                     STUDIO                       #
@@ -234,16 +248,19 @@ automation:
     hide_entity: true
     trigger:
       platform: event
-      event_type: telegram_command
+      event_type: telegram_callback
       event_data:
-        command: '/studio-temp'
+        data: '/studio-temp'
     action:
-      - service: notify.telegram
-        data_template:
-          title: 'Studio'
-          message: 'Ci sono {{states.sensor.jmp_studio_22_22_1.state}} C e {{states.sensor.jmp_studio_22_22_2.state}} % di umidità nello studio'
-          target: 
-            - !secret telegram_chatid
+    - service: notify.telegram
+      data_template:
+        title: '*Studio*'
+        message: 'Ci sono {{states.sensor.jmp_studio_22_22_1.state}} C e {{states.sensor.jmp_studio_22_22_2.state}} % di umidità nello studio'
+        data:
+          inline_keyboard:
+          - 'Home:/home'
+        target: 
+        - !secret telegram_chatid
 
 ####################################################
 #                                                  #
@@ -255,16 +272,19 @@ automation:
     hide_entity: true
     trigger:
       platform: event
-      event_type: telegram_command
+      event_type: telegram_callback
       event_data:
-        command: '/ingresso-temp'
+        data: '/ingresso-temp'
     action:
-      - service: notify.telegram
-        data_template:
-          title: 'Ingresso'
-          message: 'Ci sono {{states.sensor.temperature_158d0001d6be78.state}} C e {{states.sensor.humidity_158d0001d6be78.state}} % di umidità in ingresso'
-          target: 
-            - !secret telegram_chatid
+    - service: notify.telegram
+      data_template:
+        title: 'Ingresso'
+        message: 'Ci sono {{states.sensor.temperature_158d0001d6be78.state}} C e {{states.sensor.humidity_158d0001d6be78.state}} % di umidità in ingresso'
+        data:
+          inline_keyboard:
+          - 'Home:/home'
+        target: 
+        - !secret telegram_chatid
 
 ####################################################
 #                                                  #

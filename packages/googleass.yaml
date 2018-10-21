@@ -74,13 +74,6 @@ google_assistant:
       aliases:
         - Luce camera striscia
         - luce camera striscia led
-    light.xiaomi_philips_camera:
-      room: camera da letto
-      name: luce camera romina
-      expose: true
-      aliases:
-        - Luce camera culla
-        - luce camera comodino
     light.yeelight_luce_bedside:
       room: camera da letto
       name: luce camera gianpi
@@ -108,14 +101,33 @@ google_assistant:
       aliases:
         - Luce nello Studio
         - luce camera ospiti
-    switch.piantana_sala:
+    light.xiaomi_philips_studio_1:
+      room: studio
+      name: luce piantana 1
+      expose: true
+      aliases:
+        - Luce piantana uno
+        - luce studio piantana 1
+    light.xiaomi_philips_studio_2:
+      room: studio
+      name: luce piantana 2
+      expose: true
+      aliases:
+        - Luce piantana due
+        - luce studio piantana 2
+    group.piantana_lights:
+      room: studio
+      name: luce piantana
+      expose: true
+      aliases:
+        - Luce piantana studio  
+    switch.luce_sala:
       room: salotto
-      name: piantana sala
+      name: luce sala
       expose: true
       aliases:
         - Luce Sala
         - luce salotto
-        - piantana salotto
     switch.tv_lg:
       room: salotto
       name: TV LG
@@ -179,6 +191,14 @@ google_assistant:
       expose: true
       aliases:
         - Valvola Sala 1
+        - valvola salotto uno  
+    climate.valvola_salotto2:
+      room: salotto
+      name: Valvola Salotto 2
+      expose: true
+      aliases:
+        - Valvola Sala 2
+        - valvola salotto due
     climate.valvola_studio:
       room: studio
       name: Valvola Studio
