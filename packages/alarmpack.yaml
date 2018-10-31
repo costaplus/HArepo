@@ -59,6 +59,7 @@ input_number:
   dss_gateway_alarm_volume:
     name: "Volume 'Allarme'"
     icon: mdi:volume-high
+    initial: '50'
     min: 0
     max: 100
     step: 5
@@ -66,6 +67,7 @@ input_number:
   dss_gateway_pending_volume:
     name: "Volume 'In attivazione'"
     icon: mdi:volume-high
+    initial: '20'
     min: 0
     max: 100
     step: 5
@@ -73,6 +75,7 @@ input_number:
   dss_gateway_disarmed_volume:
     name: "Volume 'Disarmato'"
     icon: mdi:volume-high
+    initial: '20'
     min: 0
     max: 100
     step: 5

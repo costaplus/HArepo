@@ -65,8 +65,72 @@ camera:
 ####################################################
 ffmpeg:
   ffmpeg_bin: /usr/bin/ffmpeg
+#################################################################
+#                                                               #
+#                           Sensori                             #
+#                                                               #
+#################################################################
+####################################################
+#                                                  #
+#                  DAFANG STATUS                   #
+#                                                  #
+####################################################
+sensor:  
+  - platform: mqtt
+    state_topic: "myhome/dafang1"
+    name: "dafang1"
+    json_attributes:
+      - uptime
+      - ssid
+      - bitrate
+      - signal_level
+      - link_quality
+      - noise_level
 
-
+  - platform: mqtt
+    state_topic: "myhome/dafang2"
+    name: "dafang2"
+    json_attributes:
+      - uptime
+      - ssid
+      - bitrate
+      - signal_level
+      - link_quality
+      - noise_level
+#################################################################
+#                                                               #
+#                          Automation                           #
+#                                                               #
+#################################################################
+automation:
+  - alias: Rilevamento movimenti e invio foto
+    hide_entity: true
+    trigger:
+    - entity_id: group.pir_sensors
+      platform: state
+      to: 'on'
+    condition:
+    - condition: state
+      entity_id: sensor.gianpi
+      state: 'Fuori'
+    - condition: state
+      entity_id: sensor.romi
+      state: 'Fuori'
+    - condition: state
+      entity_id: alarm_control_panel.house
+      state: armed_away
+    action:
+    - service: notify.telegram
+      data_template:
+        message: 'Rilevati Movimenti.'
+        data: 
+          photo:
+            url: 'https://www.jump2000.it{{states.camera.dafang1.attributes.entity_picture}}'
+            caption: '{{now().strftime("%d.%m.%Y-%H:%M:%S")}}'
+    - service: notify.telegram
+      data:
+        title: '*-- ATTENZIONE --*'
+        message: 'Rilevati Movimenti. Please check your home'
 #################################################################
 #                                                               #
 #                  End of Configuration                         #

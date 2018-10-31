@@ -96,7 +96,7 @@ automation:
 #                  XIAOMI CUBE                     #
 #                                                  #
 ####################################################
-  - alias: aumenta luminosita luce ingresso con cubo
+  - alias: aumenta luminosita paralume sala con cubo
     trigger:
       platform: mqtt
       topic: 'zigbee2mqtt/0x00158d000269e844'
@@ -104,14 +104,14 @@ automation:
     - condition: template
       value_template: "{{ 'rotate_right' == trigger.payload_json.action }}"
     - condition: state
-      entity_id: light.yeelight_luce_ingresso
+      entity_id: light.yeelight_paralume_sala
       state: 'on'
     action:
     - service: light.turn_on
-      entity_id: light.yeelight_luce_ingresso
+      entity_id: light.yeelight_paralume_sala
       data_template:
         brightness: >-
-          {{ states.light.yeelight_luce_ingresso.attributes.brightness | round(0) + 50 }}
+          {{ states.light.yeelight_paralume_sala.attributes.brightness | round(0) + 50 }}
 ####################################################
   - alias: diminuisce luminosita luce ingresso con cubo
     trigger:
@@ -121,14 +121,14 @@ automation:
     - condition: template
       value_template: "{{ 'rotate_left' == trigger.payload_json.action }}"
     - condition: state
-      entity_id: light.yeelight_luce_ingresso
+      entity_id: light.yeelight_paralume_sala
       state: 'on'
     action:
       service: light.turn_on
-      entity_id: light.yeelight_luce_ingresso
+      entity_id: light.yeelight_paralume_sala
       data_template:
         brightness: >-
-          {{ states.light.yeelight_luce_ingresso.attributes.brightness | round(0) - 50 }}
+          {{ states.light.yeelight_paralume_sala.attributes.brightness | round(0) - 50 }}
 #################################################### 
   - alias: accende spegne TV LG con cubo
     trigger:
@@ -149,8 +149,8 @@ automation:
       condition: template
       value_template: "{{ 'tap' == trigger.payload_json.action }}"
     action:
-      service: switch.toggle
-      entity_id: switch.luce_sala
+      service: light.toggle
+      entity_id: light.luci_sala
 ####################################################
   - alias: accende spegne luce studio con cubo
     trigger:
@@ -163,7 +163,7 @@ automation:
       service: light.toggle
       entity_id: light.yeelight_luce_studio
 ####################################################
-  - alias: accende spegne piantana studio con cubo
+  - alias: accende spegne luci bedroom con cubo
     trigger:
       platform: mqtt
       topic: 'zigbee2mqtt/0x00158d000269e844'
@@ -172,7 +172,7 @@ automation:
       value_template: "{{ 'flip180' == trigger.payload_json.action }}"
     action:
       service: light.toggle
-      entity_id: group.piantana_lights
+      entity_id: group.bedroom_lights
 ####################################################
   - alias: accende spegne luce ingresso con cubo
     trigger:
@@ -183,7 +183,7 @@ automation:
       value_template: "{{ 'slide' == trigger.payload_json.action }}"
     action:
       service: light.toggle
-      entity_id: light.yeelight_luce_ingresso 
+      entity_id: light.xiaomi_philips_ingresso 
 #################################################################
 #                                                               #
 #                             END                               #

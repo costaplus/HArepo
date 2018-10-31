@@ -74,26 +74,40 @@ google_assistant:
       aliases:
         - Luce camera striscia
         - luce camera striscia led
+    group.lampadario_bedroom:
+      room: camera da letto
+      name: luce lampadario
+      expose: true
+      aliases:
+        - Lampadario Bedroom
+        - Luce lampadario
     light.yeelight_luce_bedside:
       room: camera da letto
       name: luce camera gianpi
       expose: true
       aliases:
-        - Luce bedside
+        - Luce Bedside
         - luce bedside comodino
     light.gateway_light_f0b429b45c97:
       room: entrata
       name: luce gateway ingresso
       expose: true
       aliases:
-        - Luce gateway entrata 
-    light.yeelight_luce_ingresso:
+        - Luce gateway entrata
+    light.xiaomi_philips_ingresso:
       room: entrata
       name: luce ingresso
       expose: true
       aliases:
-        - Luce in Ingresso
+        - Paralume Ingresso
         - luce entrata
+    light.yeelight_paralume_sala:
+      room: salotto
+      name: luce sala
+      expose: true
+      aliases:
+        - Paralume Sala
+        - paralume salotto
     light.yeelight_luce_studio:
       room: studio
       name: luce studio
@@ -101,33 +115,33 @@ google_assistant:
       aliases:
         - Luce nello Studio
         - luce camera ospiti
-    light.xiaomi_philips_studio_1:
+    light.xiaomi_philips_bedroom:
       room: studio
-      name: luce piantana 1
+      name: luce romina
       expose: true
       aliases:
-        - Luce piantana uno
-        - luce studio piantana 1
-    light.xiaomi_philips_studio_2:
-      room: studio
-      name: luce piantana 2
-      expose: true
-      aliases:
-        - Luce piantana due
-        - luce studio piantana 2
-    group.piantana_lights:
-      room: studio
-      name: luce piantana
-      expose: true
-      aliases:
-        - Luce piantana studio  
-    switch.luce_sala:
+        - Paralume Romina
+        - luce livia
+    light.applique_sala:
       room: salotto
-      name: luce sala
+      name: lampadario salotto
       expose: true
       aliases:
-        - Luce Sala
-        - luce salotto
+        - Applique Sala
+        - applique salotto
+        - lampadario sala
+    group.sala_lights:
+      room: salotto
+      name: luci salotto
+      expose: true
+      aliases:
+        - Luci Sala
+    group.studio_lights:
+      room: studio
+      name: luci studio
+      expose: true
+      aliases:
+        - Luci Studio
     switch.tv_lg:
       room: salotto
       name: TV LG
@@ -223,10 +237,10 @@ automation:
       data:
         entity_id: media_player.salotto
         volume_level: 0.20
-    - service: notify.telegram
-      data_template:
-        title: "-- Google Home --"
-        message: 'Volume Google Home 20%'
+#    - service: notify.telegram
+#      data_template:
+#        title: "-- Google Home --"
+#        message: 'Volume Google Home 20%'
 
   - alias: Set GA Volume To High Daytime
     trigger:
@@ -239,7 +253,7 @@ automation:
       data:
         entity_id: media_player.salotto
         volume_level: 0.4
-    - service: notify.telegram
-      data_template:
-        title: "-- Google Home --"
-        message: 'Volume Google Home 40%'
+#    - service: notify.telegram
+#      data_template:
+#        title: "-- Google Home --"
+#        message: 'Volume Google Home 40%'

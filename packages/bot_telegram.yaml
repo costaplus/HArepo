@@ -50,6 +50,7 @@ automation:
           inline_keyboard:
           - 'Home:/home, RpiTemp:/rpitemp, Pot:/potenza, Temp:/temperature'
           - 'Bed:/bedroom-temp, Cucina:/cucina-temp, Livia:/cameralivia-temp, Studio:/studio-temp'
+          - 'Dafang1:/dafang1, Dafang2:/dafang2'
         target: 
         - !secret telegram_chatid
     - service: shell_command.log
@@ -78,6 +79,7 @@ automation:
           inline_keyboard:
           - 'Home:/home, RpiTemp:/rpitemp, Pot:/potenza, Temp:/temperature'
           - 'Bed:/bedroom-temp, Cucina:/cucina-temp, Livia:/cameralivia-temp, Studio:/studio-temp'
+          - 'Dafang1:/dafang1, Dafang2:/dafang2'
         target: 
         - !secret telegram_chatid
 
@@ -285,7 +287,56 @@ automation:
           - 'Home:/home'
         target: 
         - !secret telegram_chatid
+####################################################
+#                                                  #
+#                    DAFANG 1                    #
+#                                                  #
+####################################################
 
+  - alias: 'Telegram bot that reply to camera1'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_callback
+      event_data:
+        data: '/dafang1'
+    action:
+    - service: notify.telegram
+      data_template:
+        message: 'Snapshot Dafang 1'
+        data: 
+          photo:
+            url: 'https://www.jump2000.it{{states.camera.dafang1.attributes.entity_picture}}'
+            caption: '{{now().strftime("%d.%m.%Y-%H:%M:%S")}}'
+          inline_keyboard:
+          - 'Home:/home'
+        target: 
+        - !secret telegram_chatid
+####################################################
+#                                                  #
+#                     DAFANG 2                     #
+#                                                  #
+####################################################
+
+  - alias: 'Telegram bot that reply to camera1'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_callback
+      event_data:
+        data: '/dafang2'
+    action:
+    - service: notify.telegram
+      data_template:
+        message: 'Snapshot Dafang 1'
+        data: 
+          photo:
+            url: 'https://www.jump2000.it{{states.camera.dafang2.attributes.entity_picture}}'
+            caption: '{{now().strftime("%d.%m.%Y-%H:%M:%S")}}'
+          inline_keyboard:
+          - 'Home:/home'
+        target: 
+        - !secret telegram_chatid
 ####################################################
 #                                                  #
 #               BALCONE SALA ESTERNO               #

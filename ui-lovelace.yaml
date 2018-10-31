@@ -253,7 +253,7 @@ views:
         cards:
         - type: picture-entity
           title: Studio
-          entity: group.studio_lights
+          entity: light.yeelight_luce_studio
           tap_action: toggle
           image: /local/images/workroom.jpeg
         - type: entities
@@ -297,7 +297,7 @@ views:
         cards:
         - type: picture-entity
           title: Sala
-          entity: switch.luce_sala
+          entity: group.sala_lights
           tap_action: toggle
           image: /local/images/livingroom.jpeg
         - type: entities
@@ -376,6 +376,12 @@ views:
           style:
             top: 15%
             left: 30%
+        - type: state-icon
+          tap_action: toggle
+          entity: light.xiaomi_philips_bedroom
+          style:
+            top: 18%
+            left: 35%
 ### THB BEDROOM
         - type: state-label
           entity: sensor.jmp_bedroom_13_13_2
@@ -395,10 +401,16 @@ views:
 ### SALA
         - type: state-icon
           tap_action: toggle
-          entity: switch.luce_sala
+          entity: light.applique_sala
           style:
-            top: 24%
-            left: 56%
+            top: 18%
+            left: 65%
+        - type: state-icon
+          tap_action: toggle
+          entity: light.yeelight_paralume_sala
+          style:
+            top: 29%
+            left: 58%
         - type: state-label
           entity: sensor.orchidea_temperature
           style:
@@ -416,12 +428,6 @@ views:
           style:
             top: 77%
             left: 68%
-        - type: state-icon
-          tap_action: toggle
-          entity: group.piantana_lights
-          style:
-            top: 77%
-            left: 72%
         - type: state-label
           entity: sensor.jmp_studio_22_22_1
           style:
@@ -436,7 +442,7 @@ views:
 ### INGRESSO
         - type: state-icon
           tap_action: toggle
-          entity: light.yeelight_luce_ingresso
+          entity: light.xiaomi_philips_ingresso
           style:
             top: 62%
             left: 48%
@@ -601,7 +607,7 @@ views:
           - sensor.orchidea_battery
           - sensor.sansevieria_battery
           - sensor.bat_cubo_studio
-          - sensor.bat_water_studio
+#          - sensor.bat_water_studio
           - input_number.soglia_minima_batterie
       - type: entities
         title: Batterie Smartphone
@@ -619,6 +625,8 @@ views:
             secondary_info: last-changed
           - entity: sensor.jmp_weather_16_16_7
             secondary_info: last-changed
+#          - entity: sensor.jmp_rain_17_17_7
+#            secondary_info: last-changed
           - entity: sensor.jmp_livia_21_21_7
             secondary_info: last-changed
           - entity: sensor.jmp_studio_22_22_7
@@ -651,13 +659,14 @@ views:
           - light.hue_color_lamp_2
           - light.hue_color_lamp_3
           - light.hue_lightstrip_plus_1
+          - light.xiaomi_philips_bedroom
           
         - type: entities
           title: Yeelights
           show_header_toggle: false
           entities:        
           - light.yeelight_luce_studio
-          - light.yeelight_luce_ingresso
+          - light.yeelight_paralume_sala
           - light.yeelight_luce_bedside
 
       - type: vertical-stack
@@ -666,22 +675,22 @@ views:
           title: Luci Sala
           show_header_toggle: false
           entities:
-          - switch.luce_sala
+          - light.applique_sala
+          - light.yeelight_paralume_sala
         
         - type: entities
           title: Luci Studio
           show_header_toggle: false
           entities:
           - light.yeelight_luce_studio
-          - light.xiaomi_philips_studio_1
-          - light.xiaomi_philips_studio_2
+          - light.piantana_studio
         
         - type: entities
           title: Luci Ingresso
           show_header_toggle: false
           entities:
           - light.gateway_light_f0b429b45c97
-          - light.yeelight_luce_ingresso
+          - light.xiaomi_philips_ingresso
         
       - type: entities
         title: Plug
@@ -825,36 +834,40 @@ views:
     title: Caldaia e clima
     id: clima
     cards:
-    - type: entities
-      title: Clima Daikin
-      show_header_toggle: false
-      entities: 
-      - climate.daikin_fx_sala
-    - type: entities
-      title: Termostato Netatmo Ingresso
-      show_header_toggle: false
-      entities: 
-      - climate.netatmo1
-    - type: entities
-      title: Valvole EQ-3
-      show_header_toggle: false
-      entities:
-      - climate.valvola_studio
-      - climate.valvola_salotto1
-      - sensor.apertura_valvola_salotto1
-      - binary_sensor.finestra_aperta_valvola_salotto1
-      - binary_sensor.low_battery_valvola_salotto1
-      - climate.valvola_salotto2
-      - sensor.apertura_valvola_salotto2
-      - binary_sensor.finestra_aperta_valvola_salotto2
-      - binary_sensor.low_battery_valvola_salotto2
-    - type: entities
-      title: Sensori Zigbee
-      show_header_toggle: false 
-      entities:
-      - input_boolean.zigbee_permit_join
-      - sensor.bridge_state
-      - timer.zigbee_permit_join
+      - type: vertical-stack                                                                                                                
+        cards:
+        - type: entities
+          entities:
+          - climate.netatmo1
+        - type: thermostat                                                                    
+          entity: climate.daikin_fx_sala
+        - type: thermostat
+          entity: climate.valvola_studio
+      - type: vertical-stack                                                                                                                
+        cards:
+        - type: thermostat
+          entity: climate.valvola_salotto1
+        - type: thermostat
+          entity: climate.valvola_salotto2      
+      - type: vertical-stack
+        cards:
+        - type: entities
+          title: Sensori EQ-3
+          show_header_toggle: false
+          entities:
+          - sensor.apertura_valvola_salotto1
+          - binary_sensor.finestra_aperta_valvola_salotto1
+          - binary_sensor.low_battery_valvola_salotto1
+          - sensor.apertura_valvola_salotto2
+          - binary_sensor.finestra_aperta_valvola_salotto2
+          - binary_sensor.low_battery_valvola_salotto2
+        - type: entities
+          title: Sensori Zigbee
+          show_header_toggle: false 
+          entities:
+          - input_boolean.zigbee_permit_join
+          - sensor.bridge_state
+          - timer.zigbee_permit_join
 
 ####################################################
 #                                                  #

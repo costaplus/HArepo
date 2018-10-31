@@ -44,7 +44,7 @@ homeassistant:
     light.yeelight_luce_studio:
       icon: mdi:lightbulb
 
-    light.yeelight_luce_ingresso:
+    light.yeelight_paralume_sala:
       icon: mdi:lightbulb
 
     light.yeelight_luce_bedside:
@@ -62,10 +62,13 @@ homeassistant:
     light.hue_lightstrip_plus_1:
       icon: mdi:lightbulb
 
-    light.xiaomi_philips_studio_1:
+    light.xiaomi_philips_bedroom:
       icon: mdi:lightbulb
 
-    light.xiaomi_philips_studio_2:  
+    light.xiaomi_philips_ingresso:  
+      icon: mdi:lightbulb
+
+    light.luci_ingresso:
       icon: mdi:lightbulb
 
     switch.orviboplug1:
@@ -91,22 +94,44 @@ light:
       192.168.1.142:
         name: Yeelight Luce Studio
       192.168.1.143:
-        name: Yeelight Luce Ingresso
+        name: Yeelight Paralume Sala
       192.168.1.141:
         name: Yeelight Luce BEDSIDE
 
 #https://www.home-assistant.io/components/light.xiaomi_miio/
 
   - platform: xiaomi_miio
-    name: Xiaomi Philips Studio 1
+    name: Xiaomi Philips ingresso
     host: 192.168.1.144
     token: a4f943626220b9490f70070585f008dd
 
   - platform: xiaomi_miio
-    name: Xiaomi Philips Studio 2
+    name: Xiaomi Philips bedroom
     host: 192.168.1.145
     token: f6438c708d68a39b90fa79be82233fb9
 
+  - platform: mqtt
+    name: "Applique Sala"
+    state_topic: "shellies/shelly1-8A8543/relay/0"
+    command_topic: "shellies/shelly1-8A8543/relay/0/command"
+    qos: 0
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: true  
+  
+  - platform: mqtt
+    name: "Piantana Studio"
+    state_topic: "stat/sonoff-01/POWER"
+    command_topic: "cmnd/sonoff-01/POWER"
+    availability_topic: "tele/sonoff-01/LWT"
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: true
+#    qos: 1
+#    optimistic: false
 ####################################################
 #                                                  #
 #             ORVIBO SWITCHES / SONOFF MQTT        #
@@ -119,30 +144,15 @@ switch:
       - host: 192.168.1.108
         name: Orviboplug-1
 #        mac: AC:CF:23:97:70:58
-
-  - platform: mqtt
-    name: "Luce Sala"
-    state_topic: "stat/sonoff-01/POWER"
-    command_topic: "cmnd/sonoff-01/POWER"
-    availability_topic: "tele/sonoff-01/LWT"
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    retain: false
-#    qos: 1
-#    optimistic: false
 #################################################################
 #                                                               #
 #                           Group                               #
 #                                                               #
 #################################################################
-
 group:
 ####################################################
 #                     LIGHTS                       #
 ####################################################
-
   Bedroom Lights:
     name: Luci Camera Letto
     view: no
@@ -152,43 +162,79 @@ group:
     - light.hue_color_lamp_2
     - light.hue_color_lamp_3
     - light.hue_lightstrip_plus_1
+    - light.xiaomi_philips_bedroom
+
+  Lampadario Bedroom:
+    name: Luci Lampadario Bedroom
+    view: no
+    entities:
+    - light.hue_color_lamp_1
+    - light.hue_color_lamp_2
+    - light.hue_color_lamp_3
 
   Yeelights:
     name: Luci Yeelight
     view: no
     entities:
     - light.yeelight_luce_studio
-    - light.yeelight_luce_ingresso
+    - light.yeelight_paralume_sala
     - light.yeelight_luce_bedside
 
-  Ingresso Lights:
+  Ingresso lights:
     name: Luci Ingresso
     view: no
     entities:
     - light.gateway_light_f0b429b45c97
-    - light.yeelight_luce_ingresso
+    - light.xiaomi_philips_ingresso
 
-  Studio Lights:
+  Xiaomi Philips lights:
+    name: Luci Xiaomi Philips
+    view: no
+    entities:
+    - light.xiaomi_philips_bedroom
+    - light.xiaomi_philips_ingresso
+
+  Sala lights:
+    name: Luci Sala
+    view: no
+    entities:
+    - light.applique_sala
+    - light.yeelight_paralume_sala
+
+  Studio lights:
     name: Luci Studio
     view: no
     entities:
-    - light.xiaomi_philips_studio_1
-    - light.xiaomi_philips_studio_2
+    - light.piantana_studio
     - light.yeelight_luce_studio
-
-  Piantana Lights:
-    name: Piantana Studio
-    view: no
-    entities:
-    - light.xiaomi_philips_studio_1
-    - light.xiaomi_philips_studio_2
-
+#################################################################
+#                                                               #
+#                            Sensori                            #
+#                                                               #
+#################################################################
+sensor:  
+  - platform: mqtt
+    state_topic: "tele/sonoff-01/INFO1"
+    name: "Sonoff"
+    json_attributes:
+      - Module
+      - Version
+      - FallbackTopic
+  - platform: mqtt
+    name: "Sonoff Temperature"
+    state_topic: "tele/sonoff-01/SENSOR"
+    value_template: "{{ value_json['DHT22'].Temperature }}"
+    unit_of_measurement: "°C"
+  - platform: mqtt
+    name: "Sonoff RSSI"
+    state_topic: "tele/sonoff-01/STATE"
+    value_template: "{{ value_json['Wifi'].RSSI }}"
+    unit_of_measurement: "dB"
 #################################################################
 #                                                               #
 #                         Automations                           #
 #                                                               #
 #################################################################
-
 automation:
 #########################################################
 #                                                       #
@@ -207,7 +253,6 @@ automation:
       service: light.toggle
       entity_id: light.hue_lightstrip_plus_1
 #--------------------------------------------------------
-
   - alias: 'Accensione Hue Lights'
     trigger:
       platform: event
@@ -221,6 +266,18 @@ automation:
         - light.hue_color_lamp_1
         - light.hue_color_lamp_2
         - light.hue_color_lamp_3
+#--------------------------------------------------------
+  - alias: 'Accensione Hue Xiaomi Philips Bedroom'
+    trigger:
+      platform: event
+      event_type: click
+      event_data:
+        entity_id: binary_sensor.switch_158d000202fd3f
+        click_type: double
+    action:
+      service: light.toggle
+      entity_id:
+        - light.xiaomi_philips_bedroom
 
 #########################################################
 #                                                       #
@@ -228,7 +285,7 @@ automation:
 #                                                       #
 #########################################################
 
-  - alias: 'Accensione Luce Sala'
+  - alias: 'Accensione Paralume Sala'
     trigger:
       platform: event
       event_type: click
@@ -236,8 +293,8 @@ automation:
         entity_id: binary_sensor.switch_158d0002016342
         click_type: single
     action:
-      service: switch.toggle
-      entity_id: switch.luce_sala
+      service: light.toggle
+      entity_id: light.yeelight_paralume_sala
 #--------------------------------------------------------
   - alias: 'Accensione Luce Ingresso2'
     trigger:
@@ -248,14 +305,24 @@ automation:
         click_type: double
     action:
       service: light.toggle
-      entity_id: light.yeelight_luce_ingresso
+      entity_id: light.xiaomi_philips_ingresso
+#--------------------------------------------------------
+  - alias: 'Accensione Luci Sala'
+    trigger:
+      platform: event
+      event_type: click
+      event_data:
+        entity_id: binary_sensor.switch_158d0002016342
+        click_type: long_click_press
+    action:
+      service: light.toggle
+      entity_id: light.applique_sala
 
 #########################################################
 #                                                       #
 #               PULSANTE INGRESSO XIAOMI                #
 #                                                       #
 #########################################################
-
   - alias: 'Accensione Luce Studio'
     trigger:
       platform: event
@@ -276,18 +343,7 @@ automation:
         click_type: single
     action:
       service: light.toggle
-      entity_id: light.yeelight_luce_ingresso
-#--------------------------------------------------------
-  - alias: 'Accensione Piantana Studio'
-    trigger:
-      platform: event
-      event_type: click
-      event_data:
-        entity_id: binary_sensor.switch_158d00013ecf04
-        click_type: long_click_press
-    action:
-      service: light.toggle
-      entity_id: group.piantana_lights
+      entity_id: light.xiaomi_philips_ingresso
 
 #########################################################
 #                                                       #
@@ -348,12 +404,9 @@ automation:
         data:
           entity_id:
             - light.gateway_light_f0b429b45c97
-            - light.yeelight_luce_ingresso
+            - light.xiaomi_philips_ingresso
+            - light.yeelight_paralume_sala
           brightness_pct: 100
-      - service: switch.turn_on
-        data:
-          entity_id:
-            - switch.luce_sala
       - service: notify.telegram
         data:
           title: '*-- ATTENZIONE --*'
@@ -388,7 +441,7 @@ automation:
     action:
       - service: light.turn_on
         data:
-          entity_id: light.yeelight_luce_ingresso
+          entity_id: light.xiaomi_philips_ingresso
           brightness_pct: 100
       - delay: 00:00:10
       - service: tts.google_say
@@ -417,14 +470,13 @@ automation:
         state: 'Day'
     action:
       - service: light.turn_off
-        entity_id: light.yeelight_luce_ingresso
+        entity_id: light.xiaomi_philips_ingresso
 
 #########################################################
 #                                                       #
 #                TURN OFF/ON XIAOMI LIGHTS              #
 #                                                       #
 #########################################################
-
   - alias: 'Spegni Luci Serali'
     trigger:
       platform: sun
@@ -435,13 +487,13 @@ automation:
         data:
           entity_id: 
             - light.gateway_light_f0b429b45c97
+            - light.xiaomi_philips_bedroom
 
 #########################################################
 #                                                       #
 #                LUCE STUDIO (DA CAMBIARE)              #
 #                                                       #
 #########################################################
-
   - alias: 'Accensione Luce Studio al passaggio'
     trigger:
       platform: state
@@ -474,21 +526,22 @@ automation:
 #       NOTIFY IF YEELIGHT e XIAOMI LIGHT OFFLINE       #
 #                                                       #
 #########################################################
-
   - alias: 'Notify if Lights are Offline'
     trigger:
       - platform: state
         entity_id:
-          - light.yeelightstudio
-          - light.yeelightingresso
-          - light.yeelightbedside
-          - light.xiaomi_philips_studio_1
-          - light.xiaomi_philips_studio_2
+          - light.yeelight_luce_bedside
+          - light.yeelight_luce_studio
+          - light.yeelight_paralume_sala
+          - light.xiaomi_philips_ingresso
           - light.gateway_light_f0b429b45c97
+          - light.applique_sala
+          - light.piantana_studio
           #- light.hue_color_lamp_1
           #- light.hue_color_lamp_2
           #- light.hue_color_lamp_3
           #- light.hue_lightstrip_plus_1
+          #- light.xiaomi_philips_bedroom
         to: 'unavailable'
     action:
       - service: notify.telegram

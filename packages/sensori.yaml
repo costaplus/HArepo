@@ -347,7 +347,6 @@ sensor:
 #                CLI FOR GRAFANA                   #
 #                                                  #
 ####################################################
-
   - platform: command_line
     name: "energy meter"
     command: 'curl -k -H "Authorization: Bearer eyJrIjoiSEdoaFJiQWdpSE5RWE5oSUdLcTY1cTI0Z2Fya1hJQloiLCJuIjoiSEEiLCJpZCI6MX0=" "http://192.168.1.101:3000/render/d-solo/680D0Azgz/sensori?orgId=1&panelId=6&from=1530736912474&to=1530823312475&width=600&height=300&tz=UTC%2B02%3A00&from=now-1d/d&to=now/d" > /home/homeassistant/.homeassistant/downloads/energymeter.png'
@@ -357,34 +356,6 @@ sensor:
     name: "power meter"
     command: 'curl -k -H "Authorization: Bearer eyJrIjoiSEdoaFJiQWdpSE5RWE5oSUdLcTY1cTI0Z2Fya1hJQloiLCJuIjoiSEEiLCJpZCI6MX0=" "http://192.168.1.101:3000/render/d-solo/680D0Azgz/sensori?panelId=18&orgId=1&from=1535802048063&to=1535888448063&width=600&height=300&tz=UTC%2B02%3A00&from=now-1d/d&to=now/d" > /home/homeassistant/.homeassistant/downloads/powermeter.png'
     scan_interval: 5900
-
-####################################################
-#                                                  #
-#                  DAFANG STATUS                   #
-#                                                  #
-####################################################
-  - platform: mqtt
-    state_topic: "myhome/dafang1"
-    name: "dafang1"
-    json_attributes:
-      - uptime
-      - ssid
-      - bitrate
-      - signal_level
-      - link_quality
-      - noise_level
-
-  - platform: mqtt
-    state_topic: "myhome/dafang2"
-    name: "dafang2"
-    json_attributes:
-      - uptime
-      - ssid
-      - bitrate
-      - signal_level
-      - link_quality
-      - noise_level
-
 
 ####################################################
 #                                                  #
