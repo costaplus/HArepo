@@ -37,12 +37,18 @@ homeassistant:
       <<: *customize
       friendly_name: THB Ingresso - Hum
     
+    sensor.xiaomi_temp_percepita:
+      <<: *customize
+      icon: mdi:oil-temperature
+      friendly_name: "T Percepita Ingresso"
+      unit_of_measurement: '°C'
+    
     sensor.xiaomipressure:
       <<: *customize
       icon: mdi:gauge
       friendly_name: "THB Ingresso - Press"
       unit_of_measurement: 'hPa'
- 
+
     sensor.flower_1_battery:
       <<: *customize
       icon: mdi:battery
@@ -58,7 +64,6 @@ homeassistant:
 #                    SWITCH                        #
 #                                                  #
 ####################################################
-
     binary_sensor.switch_158d00013ecf04:
       <<: *customize
       friendly_name: SWITCH Ingresso
@@ -76,7 +81,6 @@ homeassistant:
 #                  MOTION SENSOR                   #
 #                                                  #
 ####################################################
-
     binary_sensor.motion_sensor_158d00010e4ea5:
       <<: *customize
       friendly_name: PIR Bedroom
@@ -94,7 +98,6 @@ homeassistant:
 #                    LUX SENSOR                    #
 #                                                  #
 ####################################################
-
     sensor.illumination_158d000223684f:
       <<: *customize
       friendly_name: LUX Ingresso
@@ -108,7 +111,6 @@ homeassistant:
 #                  DOOR SENSOR                     #
 #                                                  #
 ####################################################
-
     binary_sensor.door_window_sensor_158d0002329f47:
       <<: *customize
       friendly_name: WINDOW Camera Livia
@@ -136,12 +138,12 @@ homeassistant:
     binary_sensor.door_window_sensor_158d00013e425d:
       <<: *customize
       friendly_name: PORTA FINESTRA Sala2
+
 ####################################################
 #                                                  #
 #                  SMOKE  SENSOR                   #
 #                                                  #
 ####################################################
-
     binary_sensor.smoke_sensor_158d0001bb7dda:
       <<: *customize
       friendly_name: SMOKE Sensor
@@ -151,7 +153,6 @@ homeassistant:
 #           Sensori Meteo My Sensors               #
 #                                                  #
 ####################################################
-
     sensor.jmp_energy_12_12_1:
       <<: *customize
       friendly_name: ENERGY Meter 12 - Watt
@@ -325,14 +326,31 @@ sensor:
     sensors:
       xiaomipressure:
         value_template: >
-          {{ (float(states.sensor.pressure_158d0001d6be78.state) + 41.25) | round(3) }}
+          {{ (float(states.sensor.pressure_158d0001d6be78.state) + 41.25) | round(2) }}
+
+  - platform: template
+    sensors:
+      xiaomi_temp_percepita:
+        value_template: >
+          {% set temperature = states.sensor.temperature_158d0001d6be78.state | float %}
+          {% set humidity = states.sensor.humidity_158d0001d6be78.state | float %}
+          {% macro humidex(T, H) %}
+            {% set t = 7.5*T/(237.7+T) %}
+            {% set et = 10**t %}
+            {% set e= 6.112 * et * (H/100) %}
+            {% set humidex = T+(5/9)*(e-10) %}
+            {% if humidex < T %}
+              {% set humidex = T %}
+            {% endif %}
+            {{humidex}}
+          {% endmacro %}
+          {{ humidex(temperature,humidity) | round(2)}}
 
 ####################################################
 #                                                  #
 #                ALECTO TH RFLINK                  #
 #                                                  #
 ####################################################
-
   - platform: rflink
     devices:
       alectov4_5a28_temp:

@@ -119,7 +119,17 @@ light:
     payload_off: "off"
     optimistic: false
     retain: true  
-  
+
+  - platform: mqtt
+    name: "Applique Livia"
+    state_topic: "shellies/shelly1-8AF0DE/relay/0"
+    command_topic: "shellies/shelly1-8AF0DE/relay/0/command"
+    qos: 0
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: true
+
   - platform: mqtt
     name: "Piantana Studio"
     state_topic: "stat/sonoff-01/POWER"
@@ -215,16 +225,27 @@ group:
 sensor:  
   - platform: mqtt
     state_topic: "tele/sonoff-01/INFO1"
-    name: "Sonoff"
+    name: "Sonoff Info1"
     json_attributes:
       - Module
       - Version
       - FallbackTopic
   - platform: mqtt
-    name: "Sonoff Temperature"
-    state_topic: "tele/sonoff-01/SENSOR"
-    value_template: "{{ value_json['DHT22'].Temperature }}"
-    unit_of_measurement: "°C"
+    state_topic: "tele/sonoff-01/INFO2"
+    name: "Sonoff Info2"
+    json_attributes:
+      - WebServerMode
+      - Hostname
+      - IPAddress
+  - platform: mqtt
+    state_topic: "tele/sonoff-01/STATE"
+    name: "Sonoff State"
+    json_attributes:
+      - Time
+      - Uptime
+      - Vcc
+      - POWER
+      - Wifi
   - platform: mqtt
     name: "Sonoff RSSI"
     state_topic: "tele/sonoff-01/STATE"
@@ -252,7 +273,7 @@ automation:
     action:
       service: light.toggle
       entity_id: light.hue_lightstrip_plus_1
-#--------------------------------------------------------
+#----------------------------------------------------------
   - alias: 'Accensione Hue Lights'
     trigger:
       platform: event
@@ -266,7 +287,7 @@ automation:
         - light.hue_color_lamp_1
         - light.hue_color_lamp_2
         - light.hue_color_lamp_3
-#--------------------------------------------------------
+#-----------------------------------------------------------
   - alias: 'Accensione Hue Xiaomi Philips Bedroom'
     trigger:
       platform: event
@@ -295,7 +316,7 @@ automation:
     action:
       service: light.toggle
       entity_id: light.yeelight_paralume_sala
-#--------------------------------------------------------
+#----------------------------------------------------------
   - alias: 'Accensione Luce Ingresso2'
     trigger:
       platform: event
@@ -333,7 +354,7 @@ automation:
     action:
       service: light.toggle
       entity_id: light.yeelight_luce_studio
-#--------------------------------------------------------
+#----------------------------------------------------------
   - alias: 'Accensione Luce Ingresso'
     trigger:
       platform: event
@@ -426,7 +447,7 @@ automation:
         data:
           entity_id: light.gateway_light_f0b429b45c97
           brightness_pct: 10
-#-------------------------------------------------------------------
+#----------------------------------------------------------
   - alias: 'Apertura Porta Principale Diurna Luce ON'
     initial_state: true
     hide_entity: true
@@ -454,7 +475,7 @@ automation:
             "che la forza sia con te " ,
             "ben tornati sono impaziente di eseguire i vostri comandi "
             ] |random }}
-#--------------------------------------------------------
+#----------------------------------------------------------
   - alias: 'Apertura Porta Principale Diurna Luce OFF'
     initial_state: true
     hide_entity: true
@@ -536,6 +557,7 @@ automation:
           - light.xiaomi_philips_ingresso
           - light.gateway_light_f0b429b45c97
           - light.applique_sala
+          - light.applique_livia
           - light.piantana_studio
           #- light.hue_color_lamp_1
           #- light.hue_color_lamp_2
@@ -548,7 +570,30 @@ automation:
         data_template:
           title: "*-- LIGHTS-ATTENZIONE --*"
           message: "{{ trigger.to_state.attributes.friendly_name }} è offline"
-
+#----------------------------------------------------------
+  - alias: 'Notify if Lights are Online'
+    trigger:
+      - platform: state
+        entity_id:
+          - light.yeelight_luce_bedside
+          - light.yeelight_luce_studio
+          - light.yeelight_paralume_sala
+          - light.xiaomi_philips_ingresso
+          - light.gateway_light_f0b429b45c97
+          - light.applique_sala
+          - light.applique_livia
+          - light.piantana_studio
+          #- light.hue_color_lamp_1
+          #- light.hue_color_lamp_2
+          #- light.hue_color_lamp_3
+          #- light.hue_lightstrip_plus_1
+          #- light.xiaomi_philips_bedroom
+        to: 'available'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: "*-- LIGHTS-ATTENZIONE --*"
+          message: "{{ trigger.to_state.attributes.friendly_name }} è online di nuovo"
 #########################################################
 #                                                       #
 #                   END CONFIGURATION                   #

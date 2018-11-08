@@ -179,6 +179,7 @@ views:
         entities:
         - alarm_control_panel.house
         - binary_sensor.smoke_sensor_158d0001bb7dda
+        - binary_sensor.0x00158d00023372ec
         - input_boolean.dss_mute_gateway_sounds
         - input_boolean.dss_lights_on_away_mode
         - input_number.dss_gateway_alarm_volume
@@ -253,7 +254,7 @@ views:
         cards:
         - type: picture-entity
           title: Studio
-          entity: light.yeelight_luce_studio
+          entity: group.studio_lights
           tap_action: toggle
           image: /local/images/workroom.jpeg
         - type: entities
@@ -279,12 +280,15 @@ views:
           - sensor.temperature_158d0001d6be78
           - sensor.humidity_158d0001d6be78
           - sensor.xiaomipressure
+          - sensor.xiaomi_temp_percepita
 
 ### CAMERA LIVIA
       - type: vertical-stack
         cards:
-        - type: picture
+        - type: picture-entity
           title: Camera Livia
+          entity: light.applique_livia
+          tap_action: toggle
           image: /local/images/bedroom-child.jpeg
         - type: entities
           entities:
@@ -670,14 +674,20 @@ views:
           - light.yeelight_luce_bedside
 
       - type: vertical-stack
-        cards:     
+        cards:
+        - type: entities
+          title: Luci Camera Livia
+          show_header_toggle: false
+          entities:
+          - light.applique_livia
+
         - type: entities
           title: Luci Sala
           show_header_toggle: false
           entities:
           - light.applique_sala
           - light.yeelight_paralume_sala
-        
+
         - type: entities
           title: Luci Studio
           show_header_toggle: false

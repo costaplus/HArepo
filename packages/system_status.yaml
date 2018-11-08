@@ -369,9 +369,31 @@ automation:
     action:
       - service: notify.telegram
         data_template:
-          title: "-- HA device offline --"
+          title: "*-- HA device offline --*"
           message: "{{ trigger.to_state.attributes.friendly_name }} is offline"
-
+## Notify if core device are online
+  - alias: Core Domotic Devices Offline
+    initial_state: true
+    hide_entity: true
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.ping__broadlink_rm_mini_3
+          - binary_sensor.ping__mysensors_gateway 
+          - binary_sensor.ping__philips_hue_bridge
+          - binary_sensor.ping__zyxel_router
+          - binary_sensor.ping__xiaomi_aquara_gateway
+          - binary_sensor.ping__google_home
+          - binary_sensor.ping__netatmo_relay
+          - binary_sensor.ping__dafang1_cam
+          - binary_sensor.ping__dafang2_cam
+          - binary_sensor.ping__pi_zero
+        to: 'on'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: "*-- HA device online again --*"
+          message: "{{ trigger.to_state.attributes.friendly_name }} is online again"
 ## Notify me when I get a new public IP from my ISP
   - alias: Notify Of New External IP e upgrade Cloudflare
     initial_state: true
@@ -391,6 +413,6 @@ automation:
     action:
       - service: notify.telegram
         data_template:
-          title: "-- IP WAN CHANGED --"
+          title: "*-- IP WAN CHANGED --*"
           message: "External IP changed from {{ trigger.from_state.state }} to {{ trigger.to_state.state }}"
       - service: cloudflare.update_records

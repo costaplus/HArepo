@@ -50,13 +50,14 @@ automation:
           inline_keyboard:
           - 'Home:/home, RpiTemp:/rpitemp, Pot:/potenza, Temp:/temperature'
           - 'Bed:/bedroom-temp, Cucina:/cucina-temp, Livia:/cameralivia-temp, Studio:/studio-temp'
+          - 'RpiCPU:/rpicpu, SalaEst:/salaest, StudioEst:/studioest, Rain:/rain'
           - 'Dafang1:/dafang1, Dafang2:/dafang2'
         target: 
         - !secret telegram_chatid
-    - service: shell_command.log
-      data_template:
-        text: >
-          - HA Start. WAN IP: '{{ states.sensor.external_ip.state }}'
+#    - service: shell_command.log
+#      data_template:
+#        text: >
+#          - HA Start. WAN IP: '{{ states.sensor.external_ip.state }}'
 
 ####################################################
 #                                                  #
@@ -79,6 +80,7 @@ automation:
           inline_keyboard:
           - 'Home:/home, RpiTemp:/rpitemp, Pot:/potenza, Temp:/temperature'
           - 'Bed:/bedroom-temp, Cucina:/cucina-temp, Livia:/cameralivia-temp, Studio:/studio-temp'
+          - 'RpiCPU:/rpicpu, SalaEst:/salaest, StudioEst:/studioest, Rain:/rain'
           - 'Dafang1:/dafang1, Dafang2:/dafang2'
         target: 
         - !secret telegram_chatid
@@ -106,10 +108,10 @@ automation:
           - 'Home:/home'
         target: 
         - !secret telegram_chatid
-    - service: shell_command.log
-      data_template:
-        text: >
-          - Rpi CPU Temp: '{{ states.sensor.cpu_temperature.state }} C'
+#    - service: shell_command.log
+#      data_template:
+#        text: >
+#          - Rpi CPU Temp: '{{ states.sensor.cpu_temperature.state }} C'
 
 ####################################################
 #                                                  #
@@ -173,7 +175,6 @@ automation:
 #                  MASTER BEDROOM                  #
 #                                                  #
 ####################################################
-
   - alias: 'Telegram bot that reply to bedroom temperature'
     hide_entity: true
     trigger:
@@ -197,7 +198,6 @@ automation:
 #                     CUCINA                       #
 #                                                  #
 ####################################################
-
   - alias: 'Telegram bot that reply to kitchen temperature'
     hide_entity: true
     trigger:
@@ -221,7 +221,6 @@ automation:
 #                  CAMERA LIVIA                    #
 #                                                  #
 ####################################################
-
   - alias: 'Telegram bot that reply to Livia room temperature'
     hide_entity: true
     trigger:
@@ -245,7 +244,6 @@ automation:
 #                     STUDIO                       #
 #                                                  #
 ####################################################
-
   - alias: 'Telegram bot that reply to studio temperature'
     hide_entity: true
     trigger:
@@ -269,7 +267,6 @@ automation:
 #                     INGRESSO                     #
 #                                                  #
 ####################################################
-
   - alias: 'Telegram bot that reply to entrance temperature'
     hide_entity: true
     trigger:
@@ -280,7 +277,7 @@ automation:
     action:
     - service: notify.telegram
       data_template:
-        title: 'Ingresso'
+        title: '*Ingresso*'
         message: 'Ci sono {{states.sensor.temperature_158d0001d6be78.state}} C e {{states.sensor.humidity_158d0001d6be78.state}} % di umidità in ingresso'
         data:
           inline_keyboard:
@@ -292,7 +289,6 @@ automation:
 #                    DAFANG 1                    #
 #                                                  #
 ####################################################
-
   - alias: 'Telegram bot that reply to camera1'
     hide_entity: true
     trigger:
@@ -317,7 +313,6 @@ automation:
 #                     DAFANG 2                     #
 #                                                  #
 ####################################################
-
   - alias: 'Telegram bot that reply to camera1'
     hide_entity: true
     trigger:
@@ -339,22 +334,46 @@ automation:
         - !secret telegram_chatid
 ####################################################
 #                                                  #
+#                        CPU %                     #
+#                                                  #
+####################################################
+  - alias: 'Telegram bot that reply to CPU use'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_callback
+      event_data:
+        data: '/rpicpu'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: '*RPi CPU*'
+          message: 'CPU Use: {{states.sensor.processor_use.state}} %'
+          data:
+            inline_keyboard:
+            - 'Home:/home'
+          target: 
+            - !secret telegram_chatid
+####################################################
+#                                                  #
 #               BALCONE SALA ESTERNO               #
 #                                                  #
 ####################################################
-
   - alias: 'Telegram bot that reply to external living room temperature'
     hide_entity: true
     trigger:
       platform: event
-      event_type: telegram_command
+      event_type: telegram_callback
       event_data:
-        command: '/balconesala-temp'
+        data: '/salaest'
     action:
       - service: notify.telegram
         data_template:
-          title: 'Balcone Sala'
+          title: '*Balcone Sala*'
           message: 'Ci sono {{states.sensor.jmp_weather_16_16_2.state}} C e {{states.sensor.jmp_weather_16_16_3.state}} % di umidità fuori al balcone'
+          data:
+            inline_keyboard:
+            - 'Home:/home'
           target: 
             - !secret telegram_chatid
 
@@ -363,19 +382,44 @@ automation:
 #                BALCONE STUDIO ESTERNO            #
 #                                                  #
 ####################################################
-
   - alias: 'Telegram bot that reply to external studio temperature'
     hide_entity: true
     trigger:
       platform: event
-      event_type: telegram_command
+      event_type: telegram_callback
       event_data:
-        command: '/balconestudio-temp'
+        data: '/studioest'
     action:
       - service: notify.telegram
         data_template:
-          title: 'Balcone Studio'
-          message: 'Ci sono {{states.sensor.jmp_weather_14_14_1.state}} C e {{states.sensor.jmp_weather_14_14_2.state}} % di umidità in fuori al balcone'
+          title: '*Balcone Studio*'
+          message: 'Ci sono {{states.sensor.jmp_weather_14_14_1.state}} C e {{states.sensor.jmp_weather_14_14_2.state}} % di umidità fuori al balcone'
+          data:
+            inline_keyboard:
+            - 'Home:/home'
+          target: 
+            - !secret telegram_chatid
+
+####################################################
+#                                                  #
+#                      RAIN                        #
+#                                                  #
+####################################################
+  - alias: 'Telegram bot that reply to daily rain'
+    hide_entity: true
+    trigger:
+      platform: event
+      event_type: telegram_callback
+      event_data:
+        data: '/rain'
+    action:
+      - service: notify.telegram
+        data_template:
+          title: '*Pioggia*'
+          message: 'Pioggia oggi: {{states.sensor.rain_day.state}} mm'
+          data:
+            inline_keyboard:
+            - 'Home:/home'
           target: 
             - !secret telegram_chatid
 

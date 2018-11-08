@@ -88,6 +88,12 @@ google_assistant:
       aliases:
         - Luce Bedside
         - luce bedside comodino
+    light.xiaomi_philips_bedroom:
+      room: camera da letto
+      name: luce romina
+      expose: true
+      aliases:
+        - Paralume Romina
     light.gateway_light_f0b429b45c97:
       room: entrata
       name: luce gateway ingresso
@@ -115,13 +121,6 @@ google_assistant:
       aliases:
         - Luce nello Studio
         - luce camera ospiti
-    light.xiaomi_philips_bedroom:
-      room: studio
-      name: luce romina
-      expose: true
-      aliases:
-        - Paralume Romina
-        - luce livia
     light.applique_sala:
       room: salotto
       name: lampadario salotto
@@ -130,6 +129,13 @@ google_assistant:
         - Applique Sala
         - applique salotto
         - lampadario sala
+    light.applique_livia:
+      room: camera livia
+      name: lampadario Livia
+      expose: true
+      aliases:
+        - Applique Livia
+        - applique camera Livia
     group.sala_lights:
       room: salotto
       name: luci salotto

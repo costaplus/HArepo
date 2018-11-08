@@ -10,7 +10,20 @@
 #                                                               #
 #################################################################
 
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
 
+    package.node_anchors:
+      customize: &customize
+        package: 'cumulative'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
 
 #################################################################
 #                                                               #
@@ -36,7 +49,7 @@ sensor:
         icon_template: mdi:flash-outline        
 
 #--------------------------------------------------- 
- #accumulo giornaliero di pioggia 
+#accumulo giornaliero di pioggia 
   - platform: template
     sensors:
       rain_day:
@@ -46,12 +59,18 @@ sensor:
         unit_of_measurement: 'mm'
         icon_template: mdi:water
 
+  - platform: file
+    name: energy mezzanotte
+    file_path: /home/homeassistant/.homeassistant/energylog.txt
+
+  - platform: file
+    name: rain mezzanotte
+    file_path: /home/homeassistant/.homeassistant/rainlog.txt   
 #################################################################
 #                                                               #
 #                       input number                            #
 #                                                               #
 #################################################################
-
 input_number:
   midnight_energy:
     name: Midnight Power Level
@@ -69,7 +88,7 @@ input_number:
 #################################################################
 # scrive su file i valori giornalieri del sensore
 automation:
-  - alias: 'Energy Start of the day value'
+  - alias: 'Energy Rain Start of the day value'
     trigger:
       platform: time
       at: '00:00:00'
@@ -81,14 +100,6 @@ automation:
       - service: notify.energy
         data_template:
           message: "{{ states.sensor.jmp_energy_12_12_2.state }} kWh"
-
-#---------------------------------------------------
-        
-  - alias: 'Rain Start of the day value'
-    trigger:
-      platform: time
-      at: '00:00:00'
-    action:
       - service: input_number.set_value
         data_template:
           entity_id: input_number.midnight_rain
@@ -96,6 +107,33 @@ automation:
       - service: notify.rain
         data_template:
           message: "{{ states.sensor.jmp_rain_17_17_3.state }} mm"
+
+#---------------------------------------------------
+  - alias: 'Rain and Energy Update'
+    initial_state: true
+    trigger:
+      platform: time
+      minutes: '/4'
+    action:
+      - service: homeassistant.update_entity
+        entity_id: 
+        - sensor.rain_day
+        - sensor.energy_day
+
+#---------------------------------------------------
+  - alias: 'Startup Daily sensor'
+    trigger:
+      platform: homeassistant
+      event: start
+    action: 
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.midnight_rain
+          value: '{{ states.sensor.rain_mezzanotte.state.split(" ")[1]|float(2) }}'
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.midnight_energy
+          value: '{{ states.sensor.energy_mezzanotte.state.split(" ")[1]|float(2) }}'
 
 #################################################################
 #                                                               #

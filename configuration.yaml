@@ -16,6 +16,8 @@ homeassistant:
   customize: !include customize.yaml
   customize_glob: !include customize_glob.yaml
   packages: !include_dir_named packages
+  whitelist_external_dirs:
+    - /home/homeassistant/.homeassistant
   
 ############################################################################
 http:
@@ -43,9 +45,10 @@ logbook:
 # Enables a map showing the location of tracked devices
 map:
 
+discovery:
+ios:
 #cloud:
 #updater:
-discovery:
 #conversation:
 
 ###############################################

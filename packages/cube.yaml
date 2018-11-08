@@ -63,7 +63,7 @@ sensor:
 
   - platform: template
     sensors:
-      water_cubo_studio:
+      bat_water_studio:
         unit_of_measurement: "%" 
         value_template: '{{ state_attr("binary_sensor.0x00158d00023372ec", "battery") | int }}'
 
@@ -150,7 +150,7 @@ automation:
       value_template: "{{ 'tap' == trigger.payload_json.action }}"
     action:
       service: light.toggle
-      entity_id: light.luci_sala
+      entity_id: group.sala_lights
 ####################################################
   - alias: accende spegne luce studio con cubo
     trigger:
@@ -161,7 +161,7 @@ automation:
       value_template: "{{ 'flip90' == trigger.payload_json.action }}"
     action:
       service: light.toggle
-      entity_id: light.yeelight_luce_studio
+      entity_id: group.studio_lights
 ####################################################
   - alias: accende spegne luci bedroom con cubo
     trigger:
