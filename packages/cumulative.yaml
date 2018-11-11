@@ -36,7 +36,6 @@ homeassistant:
 #                          Sensors                              #
 #                                                               #
 ################################################################# 
-
 sensor:
 #consumo giornaliero di energia elettrica       
   - platform: template
@@ -65,7 +64,8 @@ sensor:
 
   - platform: file
     name: rain mezzanotte
-    file_path: /home/homeassistant/.homeassistant/rainlog.txt   
+    file_path: /home/homeassistant/.homeassistant/rainlog.txt
+ 
 #################################################################
 #                                                               #
 #                       input number                            #
@@ -81,6 +81,7 @@ input_number:
     name: Midnight Rain Level
     min: 0
     max: 999999999
+
 #################################################################
 #                                                               #
 #                         Automations                           #
@@ -140,7 +141,6 @@ automation:
 #                     NOTIFY IF WATT >4000                      #
 #                                                               #
 #################################################################
-
   - alias: 'Notify if watt major 4000'
     trigger:
       - platform: numeric_state
@@ -165,7 +165,7 @@ automation:
             "Attenzione potenza elevata, spegnere il forno" ,
             "Attenzione consumo elevato, spegnere qualche elettromodestico " ,
             ] |random }}
-      - delay: '00:020:00'
+      - delay: '00:20:00'
       - service: tts.google_say
         entity_id: media_player.salotto
         data_template: 

@@ -1,11 +1,5 @@
 #https://www.home-assistant.io/lovelace/
-
 resources:
-#  - url: /local/gauge-card.js?v=1
-#    type: js
-#  - url: /local/alarm_control_panel-card.js?v=1
-#    type: js
-
 ####################################################
 #                                                  #
 #                      HOME                        #
@@ -430,7 +424,7 @@ views:
           tap_action: toggle
           entity: light.yeelight_luce_studio
           style:
-            top: 77%
+            top: 78%
             left: 68%
         - type: state-label
           entity: sensor.jmp_studio_22_22_1
@@ -450,6 +444,12 @@ views:
           style:
             top: 62%
             left: 48%
+        - type: state-icon
+          tap_action: toggle
+          entity: light.luce_stanzino
+          style:
+            top: 70%
+            left: 50%
         - type: state-icon
           tap_action: toggle
           entity: light.gateway_light_f0b429b45c97
@@ -510,6 +510,12 @@ views:
             top: 32%
             left: 82%
 ### CAMERA Livia
+        - type: state-icon
+          tap_action: toggle
+          entity: light.applique_livia
+          style:
+            top: 63%
+            left: 30%
         - type: state-label
           entity: sensor.jmp_livia_21_21_1
           style:
@@ -558,11 +564,7 @@ views:
           title: Network Device 
           entities:
           - binary_sensor.ping__zyxel_router
-        - type: history-graph
-          title: Internet Speed
-          entities:
-          - sensor.speedtest_download
-          - sensor.speedtest_upload
+
 ### HA
       - type: vertical-stack
         cards:
@@ -635,14 +637,6 @@ views:
             secondary_info: last-changed
           - entity: sensor.jmp_studio_22_22_7
             secondary_info: last-changed
-### SPEED     
-      - type: entities
-        title: Network Speed
-        entities:
-          - sensor.speedtest_download
-          - sensor.speedtest_upload
-          - sensor.speedtest_ping
-          - sensor.external_ip
           
 ####################################################
 #                                                  #
@@ -693,7 +687,12 @@ views:
           show_header_toggle: false
           entities:
           - light.yeelight_luce_studio
-          - light.piantana_studio
+
+        - type: entities
+          title: Luce Stanzino
+          show_header_toggle: false
+          entities:
+          - light.luce_stanzino
         
         - type: entities
           title: Luci Ingresso
@@ -837,6 +836,43 @@ views:
 
 ####################################################
 #                                                  #
+#                     SENSORI 2                    #
+#                                                  #
+####################################################
+  - icon: mdi:forklift
+    title: ALtri Sensri
+    id: altrisensori
+    cards:
+      - type: entities
+        title: Sensori Zigbee
+        show_header_toggle: false 
+        entities:
+        - input_boolean.zigbee_permit_join
+        - sensor.bridge_state
+        - timer.zigbee_permit_join
+      - type: entities
+        title: Sonoff stanzino
+        show_header_toggle: false 
+        entities:
+        - sensor.sonoff_info1
+        - sensor.sonoff_info2
+        - sensor.sonoff_state
+      - type: history-graph
+        title: Internet Speed
+        entities:
+        - sensor.speedtest_download
+        - sensor.speedtest_upload
+### SPEED     
+      - type: entities
+        title: Network Speed
+        entities:
+          - sensor.speedtest_download
+          - sensor.speedtest_upload
+          - sensor.speedtest_ping
+          - sensor.external_ip
+
+####################################################
+#                                                  #
 #                    CLIMATE                       #
 #                                                  #
 ####################################################
@@ -871,13 +907,6 @@ views:
           - sensor.apertura_valvola_salotto2
           - binary_sensor.finestra_aperta_valvola_salotto2
           - binary_sensor.low_battery_valvola_salotto2
-        - type: entities
-          title: Sensori Zigbee
-          show_header_toggle: false 
-          entities:
-          - input_boolean.zigbee_permit_join
-          - sensor.bridge_state
-          - timer.zigbee_permit_join
 
 ####################################################
 #                                                  #
@@ -945,7 +974,7 @@ views:
 #                    CAMERA 1                      #
 #                                                  #
 ####################################################
-  - icon: mdi:cctv
+  - icon: mdi:camera-front
     title: Telecamera Ingresso
     id: camera1
     cards:

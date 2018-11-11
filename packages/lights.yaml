@@ -68,9 +68,6 @@ homeassistant:
     light.xiaomi_philips_ingresso:  
       icon: mdi:lightbulb
 
-    light.luci_ingresso:
-      icon: mdi:lightbulb
-
     switch.orviboplug1:
       friendly_name: Orvibo Plug S20
       icon: mdi:power-plug
@@ -131,7 +128,7 @@ light:
     retain: true
 
   - platform: mqtt
-    name: "Piantana Studio"
+    name: "Luce Stanzino"
     state_topic: "stat/sonoff-01/POWER"
     command_topic: "cmnd/sonoff-01/POWER"
     availability_topic: "tele/sonoff-01/LWT"
@@ -215,54 +212,20 @@ group:
     name: Luci Studio
     view: no
     entities:
-    - light.piantana_studio
     - light.yeelight_luce_studio
-#################################################################
-#                                                               #
-#                            Sensori                            #
-#                                                               #
-#################################################################
-sensor:  
-  - platform: mqtt
-    state_topic: "tele/sonoff-01/INFO1"
-    name: "Sonoff Info1"
-    json_attributes:
-      - Module
-      - Version
-      - FallbackTopic
-  - platform: mqtt
-    state_topic: "tele/sonoff-01/INFO2"
-    name: "Sonoff Info2"
-    json_attributes:
-      - WebServerMode
-      - Hostname
-      - IPAddress
-  - platform: mqtt
-    state_topic: "tele/sonoff-01/STATE"
-    name: "Sonoff State"
-    json_attributes:
-      - Time
-      - Uptime
-      - Vcc
-      - POWER
-      - Wifi
-  - platform: mqtt
-    name: "Sonoff RSSI"
-    state_topic: "tele/sonoff-01/STATE"
-    value_template: "{{ value_json['Wifi'].RSSI }}"
-    unit_of_measurement: "dB"
+
 #################################################################
 #                                                               #
 #                         Automations                           #
 #                                                               #
 #################################################################
 automation:
+
 #########################################################
 #                                                       #
 #               PULSANTE CAMERA XIAOMI                  #
 #                                                       #
 #########################################################
- 
   - alias: 'Accensione Hue Strip'
     trigger:
       platform: event
@@ -305,7 +268,6 @@ automation:
 #                PULSANTE SALA XIAOMI                   #
 #                                                       #
 #########################################################
-
   - alias: 'Accensione Paralume Sala'
     trigger:
       platform: event
@@ -404,7 +366,6 @@ automation:
 #              OPEN FRONT DOORS LIGHTS ON               #
 #                                                       #
 #########################################################
-
 # all'apertura porta accende due luci manda notifica e poi abbassa la luce del gateway  
   - alias: 'Apertura Porta Principale Notturna'
     trigger:
@@ -558,7 +519,7 @@ automation:
           - light.gateway_light_f0b429b45c97
           - light.applique_sala
           - light.applique_livia
-          - light.piantana_studio
+          - light.luce_stanzino
           #- light.hue_color_lamp_1
           #- light.hue_color_lamp_2
           #- light.hue_color_lamp_3
@@ -582,7 +543,7 @@ automation:
           - light.gateway_light_f0b429b45c97
           - light.applique_sala
           - light.applique_livia
-          - light.piantana_studio
+          - light.luce_stanzino
           #- light.hue_color_lamp_1
           #- light.hue_color_lamp_2
           #- light.hue_color_lamp_3

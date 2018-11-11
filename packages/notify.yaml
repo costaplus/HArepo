@@ -75,7 +75,6 @@ telegram_bot:
 #                             TTS                               #
 #                                                               #
 #################################################################
-    
 # Text to speech
 tts:
   - platform: google
@@ -90,7 +89,6 @@ tts:
 #                       Speech Scripts                          #
 #                                                               #
 #################################################################
-
 script:
   gianpi_briefing:
     alias: Gianpiero Briefing

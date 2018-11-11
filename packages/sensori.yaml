@@ -304,18 +304,61 @@ group:
     - binary_sensor.dafang1_motion_sensor
     - binary_sensor.dafang2_motion_sensor
 
-####################################################
-#                                                  #
-#                     SENSORS                      #
-#                                                  #
-####################################################
-sensor:
 #https://www.home-assistant.io/components/sensor.filesize/
 #  - platform: filesize
 #    file_paths:
 #      - /home/homeassistant/.homeassistant/home-assistant_v2.db
 #      - /home/homeassistant/.homeassistant/home-assistant.log
-
+#################################################################
+#                                                               #
+#                            Sensori                            #
+#                                                               #
+#################################################################
+sensor:  
+  - platform: mqtt
+    state_topic: "tele/sonoff-01/INFO1"
+    name: "Sonoff Info1"
+    json_attributes:
+      - Module
+      - Version
+      - FallbackTopic
+  - platform: mqtt
+    state_topic: "tele/sonoff-01/INFO2"
+    name: "Sonoff Info2"
+    json_attributes:
+      - WebServerMode
+      - Hostname
+      - IPAddress
+  - platform: mqtt
+    state_topic: "tele/sonoff-01/STATE"
+    name: "Sonoff State"
+    json_attributes:
+      - Time
+      - Uptime
+      - Vcc
+      - POWER
+      - Wifi
+#  - platform: mqtt
+#    name: "Sonoff 01 RSSI"
+#    state_topic: "tele/sonoff-01/STATE"
+#    value_template: "{{ value_json['Wifi'].RSSI }}"
+#    unit_of_measurement: "dB"
+  - platform: mqtt
+    name: "Sonoff 01 RSSI"
+    state_topic: "tele/sonoff-01/STATE"
+    value_template: "{{ value_json['Vcc'] }}"
+  - platform: mqtt
+    name: "Sonoff 01 RSSI"
+    state_topic: "tele/sonoff-01/STATE"
+    value_template: "{{ value_json['Uptime'] }}"
+  - platform: mqtt
+    name: "Sonoff 01 RSSI"
+    state_topic: "tele/sonoff-01/STATE"
+    value_template: "{{ value_json['Vcc'] }}"
+  - platform: mqtt
+    name: "Sonoff 01 RSSI"
+    state_topic: "tele/sonoff-01/STATE"
+    value_template: "{{ value_json['POWER'] }}" 
 ####################################################
 #                                                  #
 #               TEMPLATE   SENSORS                 #
@@ -365,15 +408,15 @@ sensor:
 #                CLI FOR GRAFANA                   #
 #                                                  #
 ####################################################
-  - platform: command_line
-    name: "energy meter"
-    command: 'curl -k -H "Authorization: Bearer eyJrIjoiSEdoaFJiQWdpSE5RWE5oSUdLcTY1cTI0Z2Fya1hJQloiLCJuIjoiSEEiLCJpZCI6MX0=" "http://192.168.1.101:3000/render/d-solo/680D0Azgz/sensori?orgId=1&panelId=6&from=1530736912474&to=1530823312475&width=600&height=300&tz=UTC%2B02%3A00&from=now-1d/d&to=now/d" > /home/homeassistant/.homeassistant/downloads/energymeter.png'
-    scan_interval: 6000
-    
-  - platform: command_line 
-    name: "power meter"
-    command: 'curl -k -H "Authorization: Bearer eyJrIjoiSEdoaFJiQWdpSE5RWE5oSUdLcTY1cTI0Z2Fya1hJQloiLCJuIjoiSEEiLCJpZCI6MX0=" "http://192.168.1.101:3000/render/d-solo/680D0Azgz/sensori?panelId=18&orgId=1&from=1535802048063&to=1535888448063&width=600&height=300&tz=UTC%2B02%3A00&from=now-1d/d&to=now/d" > /home/homeassistant/.homeassistant/downloads/powermeter.png'
-    scan_interval: 5900
+#  - platform: command_line
+#    name: "energy meter"
+#    command: 'curl -k -H "Authorization: Bearer eyJrIjoiSEdoaFJiQWdpSE5RWE5oSUdLcTY1cTI0Z2Fya1hJQloiLCJuIjoiSEEiLCJpZCI6MX0=" "http://192.168.1.101:3000/render/d-solo/680D0Azgz/sensori?orgId=1&panelId=6&from=1530736912474&to=1530823312475&width=600&height=300&tz=UTC%2B02%3A00&from=now-1d/d&to=now/d" > /home/homeassistant/.homeassistant/downloads/energymeter.png'
+#    scan_interval: 6000
+#    
+#  - platform: command_line 
+#    name: "power meter"
+#    command: 'curl -k -H "Authorization: Bearer eyJrIjoiSEdoaFJiQWdpSE5RWE5oSUdLcTY1cTI0Z2Fya1hJQloiLCJuIjoiSEEiLCJpZCI6MX0=" "http://192.168.1.101:3000/render/d-solo/680D0Azgz/sensori?panelId=18&orgId=1&from=1535802048063&to=1535888448063&width=600&height=300&tz=UTC%2B02%3A00&from=now-1d/d&to=now/d" > /home/homeassistant/.homeassistant/downloads/powermeter.png'
+#    scan_interval: 5900
 
 ####################################################
 #                                                  #
